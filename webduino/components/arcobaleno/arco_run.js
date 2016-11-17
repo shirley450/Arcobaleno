@@ -185,15 +185,21 @@ Arco.block['add_device_type'] = function(name, type) {
 }
 
 Arco.block['ui_type_match'] = function(blk_name) {
-	var operation_name = blk_name;
-	if (operation_name.indexOf("ID") >= 0) {
-		operation_name = operation_name.split("ID")[0];
+	if (blk_name.indexOf("ID") >= 0) {
+		blk_name = blk_name.split("ID")[0];
 	}
-	var result = position_type[operation_name.toString()];
-	
-	return result;
+	return  position_type[blk_name];
 
 }
+
+Arco.block['dev_type_match'] =function(blk_name){
+	
+	if (blk_name.indexOf("ID") >= 0) {
+		blk_name = blk_name.split("ID")[0];
+	}
+	return dev_type[blk_name];
+}
+
 
 
 // 组件类型定义, 1是源组件，2是中间组件，4是终端组件,3是源组件或者中间组件，6是中间组件或者终端组件，
@@ -201,7 +207,7 @@ Arco.block['ui_type_match'] = function(blk_name) {
 Arco.block.add_component_type("probe","6");
 Arco.block.add_component_type("textgen","1");
 Arco.block.add_component_type("led","4");
-Arco.block.add_component_type("switch", "3");
+Arco.block.add_component_type("switch", "1");
 Arco.block.add_component_type("relay","2");
 Arco.block.add_component_type("pir","1");
 Arco.block.add_component_type("passthrough","6");
@@ -212,8 +218,8 @@ Arco.block.add_component_type("controls_repeat_for","6");
 Arco.block.add_component_type("controls_repeat_until","6");
 Arco.block.add_component_type("controls_repeat_while","6");
 Arco.block.add_component_type("text_print_timeout", "7");
-Arco.block.add_component_type( "text_print_delay","2");
-Arco.block.add_component_type( "controls_branch","6");
+Arco.block.add_component_type("text_print_delay","2");
+Arco.block.add_component_type("controls_branch","6");
 
 Arco.block.add_device_type("led", "LED");
 Arco.block.add_device_type("switch", "SWITCH");
@@ -242,23 +248,6 @@ Arco.block.add_device_type("OrFinish",  "VDev");
 
 
 
-/*function dev_type_match(blk_name) {
-	var operation_name = blk_name;
-	if (operation_name.indexOf("ID") >= 0) {
-		var name_split = operation_name.split("ID");
-		operation_name = name_split[0];
-	}
-
-	var result = "";
-	for (var i = 0; i < f_type_name_list.length; i++) {
-		if (operation_name == f_type_name_list[i]) {
-			result = f_type_list[i];
-
-		}
-	}
-	return result;
-}
-*/
 
 
 

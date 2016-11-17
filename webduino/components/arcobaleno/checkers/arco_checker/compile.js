@@ -42,6 +42,7 @@ function general_blk_check(abr_list) //总体check缩进后的list
           }
         }
       }
+
       if ((find == 0 && temp_type_name == "3") || (find == 0 && temp_type_name == "7") || (find == 0 && temp_type_name == "5")) {
 
         blk_begin.push(abr_blk_list[0]);
@@ -137,7 +138,7 @@ function check_and(blkname, list_ind) {
   var find = 0;
   //and在最开始,如果and里的组件没有源组件的属性，需要abr_list的其他的列中的blk是不是有上面有blk
   for (var j = and_begin; j <= and_end; j++) {
-    var temp_type_name = position_type[notimeout_list[list_ind].blklist[j]];
+    var temp_type_name = Arco.block.ui_type_match(notimeout_list[list_ind].blklist[j]);
     if (temp_type_name == "1") {
       blk_begin.push(notimeout_list[list_ind].blklist[j]);
     } else if (temp_type_name == "2" || temp_type_name == "6" || temp_type_name == "3" || temp_type_name == "5" || temp_type_name == "7") //and组件里含有源组件的属性的组件类型1,3,5,7，需要查找的是2、6
@@ -190,7 +191,7 @@ function check_or(blkname, list_ind) {
   var erorr_num = 0;
   //or在最开始,如果and里的组件没有源组件的属性，需要abr_list的其他的列中的blk是不是有上面有blk
   for (var j = or_begin; j <= or_end; j++) {
-    var temp_type_name = position_type[notimeout_list[list_ind].blklist[j]];
+    var temp_type_name = Arco.block.ui_type_match(notimeout_list[list_ind].blklist[j]);
     if (temp_type_name == "1") {
       blk_begin.push(notimeout_list[list_ind].blklist[j]);
     } else if (temp_type_name == "2" || temp_type_name == "6" || temp_type_name == "3" || temp_type_name == "5" || temp_type_name == "7") //and组件里含有源组件的属性的组件类型1,3,5,7，需要查找的是2、6
@@ -246,7 +247,7 @@ function check_branch(blkname, list_ind) {
   {
 
     for (var i = branch_begin; i <= branch_end; i++) {
-      var temp_type_name = position_type[notimeout_list[list_ind].blklist[i]];
+      var temp_type_name = Arco.block.ui_type_match(notimeout_list[list_ind].blklist[i]);
       if (temp_type_name == "4") {
         blk_end.push(notimeout_list[list_ind].blklist[i]);
       } else if (temp_type_name == "5" && temp_type_name == "6" && temp_type_name == "7") {
@@ -275,7 +276,7 @@ function check_branch(blkname, list_ind) {
   } else { //branch不在最后
     if (notimeout_list[list_ind].blklist[branch_begin].indexOf("controls_and") >= 0 || notimeout_list[list_ind].blklist[branch_begin].indexOf("controls_or") >= 0) {
       for (var i = branch_begin + 2; i <= branch_end - 1; i++) {
-        var temp_type_name = position_type[notimeout_list[list_ind].blklist[i]];
+        var temp_type_name = Arco.block.ui_type_match(notimeout_list[list_ind].blklist[i]);
         if (temp_type_name != "2" && temp_type_name != "3" && temp_type_name != "6" && temp_type_name != "7") {
           complie_info +="Error: 11 " + notimeout_list[list_ind].blklist[i] + " can not be put in the middle of the list!"+"\n";
           erorr_num++;
@@ -305,7 +306,7 @@ function check_for(blkname, list_ind) {
   //for只能放中间组件属性2、3、6、7，如果后面没有blk，则需要查最后一个为终端组件属性4、5、6、7
   if (for_end == notimeout_list[list_ind].blklist.length - 2) //for在最后
   {
-    var temp_type_name = position_type[notimeout_list[list_ind].blklist[for_end]];
+    var temp_type_name = Arco.block.ui_type_match(notimeout_list[list_ind].blklist[for_end]);
     if (temp_type_name == "4" ) {
       blk_end.push(notimeout_list[list_ind].blklist[for_end]);
     }  else if (temp_type_name == "5" || temp_type_name == "6" || temp_type_name == "7") {
@@ -335,7 +336,7 @@ function check_for(blkname, list_ind) {
 
 
     for (var i = for_begin; i < for_end; i++) {
-      var temp_type_name = position_type[notimeout_list[list_ind].blklist[i]];
+      var temp_type_name = Arco.block.ui_type_match(notimeout_list[list_ind].blklist[i]);
       if (temp_type_name != "2" && temp_type_name != "3" && temp_type_name != "6" && temp_type_name != "7") {
         complie_info +="Error: 14 " + notimeout_list[list_ind].blklist[i] + " can not be put in the middle of the list!"+"\n";
         erorr_num++;
@@ -343,7 +344,7 @@ function check_for(blkname, list_ind) {
     }
   } else { //for不在最后
     for (var i = for_begin; i <= for_end; i++) {
-      var temp_type_name = position_type[notimeout_list[list_ind].blklist[i]];
+      var temp_type_name = Arco.block.ui_type_match(notimeout_list[list_ind].blklist[i]);
       if (temp_type_name != "2" && temp_type_name != "3" && temp_type_name != "6" && temp_type_name != "7") {
         complie_info +="Error: 15 " + notimeout_list[list_ind].blklist[i] + " can not be put in the middle of the list!"+"\n";
         erorr_num++;
@@ -368,7 +369,7 @@ function check_while(blkname, list_ind) {
   if (while_body_end == notimeout_list[list_ind].blklist.length - 2) //while在最后
   {
     for (var j = while_con_begin; j <= while_con_end; j++) {
-      var temp_type_name = position_type[notimeout_list[list_ind].blklist[j]];
+      var temp_type_name = Arco.block.ui_type_match(notimeout_list[list_ind].blklist[j]);
       if (temp_type_name == "1") {
         blk_begin.push(notimeout_list[list_ind].blklist[j]);
       } else if (temp_type_name == "2" || temp_type_name == "6" || temp_type_name == "3" || temp_type_name == "5" || temp_type_name == "7") //and组件里含有源组件的属性的组件类型1,3,5,7，需要查找的是2、6
@@ -408,7 +409,7 @@ function check_while(blkname, list_ind) {
       }
     }
     //查最后一个是不是终端组件
-    var temp_type_name = position_type[notimeout_list[list_ind].blklist[while_body_end]];
+    var temp_type_name = Arco.block.ui_type_match(notimeout_list[list_ind].blklist[while_body_end]);
      if (temp_type_name == "4" ) {
       blk_end.push(notimeout_list[list_ind].blklist[while_body_end]);
     }  else if (temp_type_name == "5" || temp_type_name == "6" || temp_type_name == "7") {
@@ -434,7 +435,7 @@ function check_while(blkname, list_ind) {
     }
 
     for (var i = while_body_begin; i < while_body_end; i++) {
-      var temp_type_name = position_type[notimeout_list[list_ind].blklist[i]];
+      var temp_type_name = Arco.block.ui_type_match(notimeout_list[list_ind].blklist[i]);
       if (temp_type_name != "2" && temp_type_name != "3" && temp_type_name != "6" && temp_type_name != "7") {
         complie_info +="Error: 19 " + notimeout_list[list_ind].blklist[i] + " can not be put in the middle of the list!"+"\n";
         erorr_num++;
@@ -445,7 +446,7 @@ function check_while(blkname, list_ind) {
   } else //while在中间
   {
     for (var j = while_con_begin; j <= while_con_end; j++) {
-      var temp_type_name = position_type[notimeout_list[list_ind].blklist[j]];
+      var temp_type_name = Arco.block.ui_type_match(notimeout_list[list_ind].blklist[j]);
       if (temp_type_name == "1") {
         blk_begin.push(notimeout_list[list_ind].blklist[j]);
       } else if (temp_type_name == "2" || temp_type_name == "6" || temp_type_name == "3" || temp_type_name == "5" || temp_type_name == "7") //and组件里含有源组件的属性的组件类型1,3,5,7，需要查找的是2、6
@@ -486,7 +487,7 @@ function check_while(blkname, list_ind) {
     }
 
     for (var i = while_body_begin; i <= while_body_end; i++) {
-      var temp_type_name = position_type[notimeout_list[list_ind].blklist[i]];
+      var temp_type_name = Arco.block.ui_type_match(notimeout_list[list_ind].blklist[i]);
       if (temp_type_name != "2" && temp_type_name != "3" && temp_type_name != "6" && temp_type_name != "7") {
         complie_info +="Error:" + notimeout_list[list_ind].blklist[i] + " can not be put in the middle of the list!"+"\n";
         erorr_num++;
@@ -511,7 +512,7 @@ function check_until(blkname, list_ind) {
   if (until_name == abr_list[list_ind].blklist[abr_list[list_ind].blklist.length - 1]) //until在最后
   {
     for (var j = until_con_begin; j <= until_con_end; j++) {
-      var temp_type_name = position_type[notimeout_list[list_ind].blklist[j]];
+      var temp_type_name = Arco.block.ui_type_match(notimeout_list[list_ind].blklist[j]);
       if (temp_type_name == "1") {
         blk_begin.push(notimeout_list[list_ind].blklist[j]);
       } else if (temp_type_name == "2" || temp_type_name == "6" || temp_type_name == "3" || temp_type_name == "5" || temp_type_name == "7") //and组件里含有源组件的属性的组件类型1,3,5,7，需要查找的是2、6
@@ -551,7 +552,7 @@ function check_until(blkname, list_ind) {
       }
     }
     //检查最后一个是否为终端组件
-    var temp_type_name = position_type[notimeout_list[list_ind].blklist[until_body_end]];
+    var temp_type_name = Arco.block.ui_type_match(notimeout_list[list_ind].blklist[until_body_end]);
     if (temp_type_name == "4" ) {
       blk_end.push(notimeout_list[list_ind].blklist[until_body_end]);
     }  else if (temp_type_name == "5" || temp_type_name == "6" || temp_type_name == "7") {
@@ -584,7 +585,7 @@ function check_until(blkname, list_ind) {
     }
 
     for (var i = until_body_begin; i < until_body_end; i++) {
-      var temp_type_name = position_type[notimeout_list[list_ind].blklist[i]];
+      var temp_type_name = Arco.block.ui_type_match(notimeout_list[list_ind].blklist[i]);
       if (temp_type_name != "2" && temp_type_name != "3" && temp_type_name != "6" && temp_type_name != "7") {
         complie_info +="Error:" + notimeout_list[list_ind].blklist[i] + " can not be put in the middle of the list!"+"\n";
         erorr_num++;
@@ -595,7 +596,7 @@ function check_until(blkname, list_ind) {
   } else //until在中间
   {
     for (var j = until_con_begin; j <= until_con_end; j++) {
-      var temp_type_name = position_type[notimeout_list[list_ind].blklist[j]];
+      var temp_type_name = Arco.block.ui_type_match(notimeout_list[list_ind].blklist[j]);
       if (temp_type_name == "1") {
         blk_begin.push(notimeout_list[list_ind].blklist[j]);
       } else if (temp_type_name == "2" || temp_type_name == "6" || temp_type_name == "3" || temp_type_name == "5" || temp_type_name == "7") //and组件里含有源组件的属性的组件类型1,3,5,7，需要查找的是2、6
@@ -636,7 +637,7 @@ function check_until(blkname, list_ind) {
     }
 
     for (var i = until_body_begin; i <= until_body_end; i++) {
-      var temp_type_name = position_type[notimeout_list[list_ind].blklist[i]];
+      var temp_type_name = Arco.block.ui_type_match(notimeout_list[list_ind].blklist[i]);
       if (temp_type_name != "2" && temp_type_name != "3" && temp_type_name != "6" && temp_type_name != "7") {
         complie_info +="Error:" + notimeout_list[list_ind].blklist[i] + " can not be put in the middle of the list!"+"\n";
         erorr_num++;

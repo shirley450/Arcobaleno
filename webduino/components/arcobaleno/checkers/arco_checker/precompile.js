@@ -1,38 +1,23 @@
 function blk_list_check(blk_list, notimeout_list, blk_ind_info, abr_list) {
 
-  
-  //找出timeout
-  //重写timeout对象的结构，timeout为object，三个元素，一个list的编号，一个begin，一个end
-  var timeout_list = new Array();
-  //消除timeout项，改写为notimeout_list
-  var notimeout_list = new Array();
+  //消除timeout项，改写为no_TO_List
   for (var i = 0; i < blk_list.length; i++) {
     var notimeout_obj = new Object();
     notimeout_obj.blklist = new Array();
     notimeout_obj.blkvallist = new Array();
-    var timeout_obj = new Object();
-    timeout_obj.ind = i;
-    timeout_obj.begin = new Array();
-    timeout_obj.end = new Array();
-
     for (var j = 0; j < blk_list[i].blklist.length; j++) {
       if (blk_list[i].blklist[j].indexOf("text_print_timeout") < 0 && blk_list[i].blklist[j].indexOf("timeout_statement") < 0) {
         notimeout_obj.blklist.push(blk_list[i].blklist[j]);
         notimeout_obj.blkvallist.push(blk_list[i].blkvallist[j]);
-      }else if (blk_list[i].blklist[j].indexOf("text_print_timeout") >= 0) {
-        var name_split = blk_list[i].blklist[j].split("ID");
-        timeout_obj.begin[name_split[1]] = j + 2;
-      } else if (blk_list[i].blklist[j].indexOf("timeout_statement") >= 0) {
-        var name_split = blk_list[i].blklist[j].split("ID");
-        timeout_obj.end[name_split[1]] = j - 1;
       }
     }
-    timeout_list.push(timeout_obj);
+
     notimeout_list.push(notimeout_obj);
   }
 
-  
-  //var timeout_list = new Array();
+  //找出timeout
+  //重写timeout对象的结构，timeout为object，三个元素，一个list的编号，一个begin，一个end
+  var timeout_list = new Array();
   var for_list = new Array();
   var while_list = new Array();
   var branch_list = new Array();
@@ -40,7 +25,7 @@ function blk_list_check(blk_list, notimeout_list, blk_ind_info, abr_list) {
   var and_list = new Array();
   var or_list = new Array();
 
-  /*for (var i = 0; i < blk_list.length; i++) {
+  for (var i = 0; i < blk_list.length; i++) {
     var timeout_obj = new Object();
     timeout_obj.ind = i;
     timeout_obj.begin = new Array();
@@ -60,7 +45,6 @@ function blk_list_check(blk_list, notimeout_list, blk_ind_info, abr_list) {
     timeout_list.push(timeout_obj);
 
   }
-*/
 
   for (var i = 0; i < notimeout_list.length; i++) //遍历拿到的notimeout_list列表
   {
