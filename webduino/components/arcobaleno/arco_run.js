@@ -185,16 +185,21 @@ Arco.block['add_device_type'] = function(name, type) {
 }
 
 Arco.block['ui_type_match'] = function(blk_name) {
-	var operation_name = blk_name;
-	if (operation_name.indexOf("ID") >= 0) {
-		operation_name = operation_name.split("ID")[0];
+	if (blk_name.indexOf("ID") >= 0) {
+		blk_name = blk_name.split("ID")[0];
 	}
-	var result = position_type[operation_name.toString()];
-	
-	return result;
+	return position_type[blk_name.toString()]
 
 }
 
+Arco.block['dev_type_match'] = function (blk_name) {
+	
+	if (blk_name.indexOf("ID") >= 0) {
+		blk_name = blk_name.split("ID")[0];
+	}
+
+	return dev_type[blk_name.toString()]
+}
 
 // 组件类型定义, 1是源组件，2是中间组件，4是终端组件,3是源组件或者中间组件，6是中间组件或者终端组件，
 // 7是源组件、中间组件或者终端组件，5是源组件或者终端组件，
@@ -242,23 +247,6 @@ Arco.block.add_device_type("OrFinish",  "VDev");
 
 
 
-/*function dev_type_match(blk_name) {
-	var operation_name = blk_name;
-	if (operation_name.indexOf("ID") >= 0) {
-		var name_split = operation_name.split("ID");
-		operation_name = name_split[0];
-	}
-
-	var result = "";
-	for (var i = 0; i < f_type_name_list.length; i++) {
-		if (operation_name == f_type_name_list[i]) {
-			result = f_type_list[i];
-
-		}
-	}
-	return result;
-}
-*/
 
 
 
