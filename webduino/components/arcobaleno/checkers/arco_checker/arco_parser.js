@@ -7,80 +7,35 @@ Arco.block['parse_element'] = function (element, list_obj) {
     if (b_element.tagName == "NEXT" || b_element.tagName == "STATEMENT") //第二次读取block
     {
       b_element = b_element.childNodes[0];
-      b_f_name = b_element.getAttribute("type"); //block的名字
-    } else {
-      b_f_name = b_element.getAttribute("type"); //block的名字
-    }
-
+    } 
+    b_f_name = b_element.getAttribute("type"); //block的名字
+    
     if (b_f_name == "controls_repeat_for") {
       b_element = Arco.block.logicComponentsParse(b_f_name, list_obj, b_element, Arco.block.parse_forblk);
  
     } else if (b_f_name == "controls_and") {
-
       b_element = Arco.block.logicComponentsParse(b_f_name, list_obj, b_element, Arco.block.parse_andblk);
 
     } else if (b_f_name == "controls_or") {
-
       b_element = Arco.block.logicComponentsParse(b_f_name, list_obj, b_element, Arco.block.parse_orblk);
 
     } else if (b_f_name == "controls_repeat_while") {
-
       b_element = Arco.block.logicComponentsParse(b_f_name, list_obj, b_element, Arco.block.parse_whileblk);
 
     } else if (b_f_name == "controls_repeat_until") {
-
       b_element = Arco.block.logicComponentsParse(b_f_name, list_obj, b_element, Arco.block.parse_untilblk);
 
     } else if (b_f_name == "text_print_delay") {
-
       b_element = Arco.block.logicComponentsParse(b_f_name, list_obj, b_element, Arco.block.parse_delayblk);
 
     } else if (b_f_name == "text_print_timeout") {
-
       b_element = Arco.block.logicComponentsParse(b_f_name, list_obj, b_element, Arco.block.parse_timeoutblk);
 
     } else if (b_f_name == "controls_branch") {
-
       b_element = Arco.block.logicComponentsParse(b_f_name, list_obj, b_element, Arco.block.parse_branchblk);
 
     } else if(true) {
-
-      var name = b_element.getElementsByTagName("FIELD")[0].childNodes[0].nodeValue;
-      if(!id_count[b_f_name]) id_count[b_f_name.toString()] = 0;
-      if(!id_info[b_f_name]) id_info[b_f_name.toString()] = new Array();
-
-      var temp = b_f_name;
-      if(name != name.toUpperCase()) //如果界面输入的不是默认组件名字
-      {
-
-        if(name in id_info[b_f_name])
-        {
-          var id_inner = id_info[b_f_name][name.toString()];
-          b_f_name = b_f_name + "ID" + id_inner;
-          list_obj.blklist.push(b_f_name);
-          list_obj.blkvallist.push("");
-        } else {
-          if(!id_count[b_f_name]) id_count[b_f_name] = 0;
-          id_info[b_f_name][name.toString()] = id_count[b_f_name];
-          b_f_name = b_f_name + "ID" + id_count[b_f_name];
-          list_obj.blklist.push(b_f_name); //往list_obj.blklist中放入block
-        }
-      }
-      else 
-      {
-        b_f_name = b_f_name + "ID" + id_count[b_f_name.toString()];
-        list_obj.blklist.push(b_f_name); //往list_obj.blklist中放入block
-        list_obj.blkvallist.push("");
-      }
-
-      id_count[temp]++;
-
-      if (b_element.childNodes.length > 1) //取next
-      {
-        b_element = b_element.childNodes[1];
-      } else if (b_element.childNodes.length ==1) {//组件在最后
-        b_element = b_element.getElementsByTagName("FIELD")[0].childNodes[0];
-      }
+         b_element = Arco.block.deviceComponentsParse(b_f_name, list_obj, b_element);
     }
     }
     return b_element;
@@ -94,8 +49,46 @@ Arco.block['logicComponentsParse'] = function (name,  list_obj, b_element, callb
   return b_element;
 }
 
+Arco.block['deviceComponentsParse'] = function (b_f_name, list_obj, b_element) {
 
+  var name = b_element.getElementsByTagName("FIELD")[0].childNodes[0].nodeValue;
+  if(!id_count[b_f_name]) id_count[b_f_name.toString()] = 0;
+  if(!id_info[b_f_name]) id_info[b_f_name.toString()] = new Array();
 
+  var temp = b_f_name;
+  if(name != Arco.block.dev_type_match(b_f_name)) //如果界面输入的不是默认组件名字
+  {
+    if(name in id_info[b_f_name])
+    {
+      var id_inner = id_info[b_f_name][name.toString()];
+      b_f_name = b_f_name + "ID" + id_inner;
+      list_obj.blklist.push(b_f_name);
+        list_obj.blkvallist.push("");
+      } else {
+        if(!id_count[b_f_name]) id_count[b_f_name] = 0;
+        id_info[b_f_name][name.toString()] = id_count[b_f_name];
+        b_f_name = b_f_name + "ID" + id_count[b_f_name];
+        list_obj.blklist.push(b_f_name); //往list_obj.blklist中放入block
+      }
+    }
+  else 
+  {
+    b_f_name = b_f_name + "ID" + id_count[b_f_name.toString()];
+    list_obj.blklist.push(b_f_name); //往list_obj.blklist中放入block
+    list_obj.blkvallist.push("");
+  }
+
+  id_count[temp]++;
+
+  if (b_element.childNodes.length > 1) //取next
+  {
+     b_element = b_element.childNodes[1];
+  } else if (b_element.childNodes.length ==1) {//组件在最后
+     b_element = b_element.getElementsByTagName("FIELD")[0].childNodes[0];
+  }
+      return b_element;
+}
+ 
    /* else if (b_f_name == "led") {
       led_name = b_element.getElementsByTagName("FIELD")[0].childNodes[0].nodeValue; //对应led显示的值
 
@@ -337,4 +330,5 @@ Arco.block['logicComponentsParse'] = function (name,  list_obj, b_element, callb
 
       }
     }*/
+
   

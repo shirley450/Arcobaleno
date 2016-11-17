@@ -73,7 +73,7 @@ Arco.ddl['generate_handler'] = function(xmlcomp, comp_info)
 			if (children[0].nodeValue == "counter")
 				Arco.ddl.generate_counter(name, value, handler);
 			else if (children[0].nodeValue == "time")
-				generate_time(name, value, handler);
+				Arco.ddl.generate_time(name, value, handler);
 		}
 	}
 	return handler;

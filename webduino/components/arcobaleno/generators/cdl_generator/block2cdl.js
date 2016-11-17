@@ -1,4 +1,5 @@
-function and2cdl(blkname, list_ind) {
+
+Arco.cdl['and2cdl'] = function (blkname, list_ind) {
   var and_name = blkname;
   var name_split = and_name.split("ID");
   var list_ind = list_ind;
@@ -8,7 +9,7 @@ function and2cdl(blkname, list_ind) {
   //从and_begin到and_end生成component  
   for (var i = and_begin; i <= and_end; i++) {
     var component_obj = new Object();
-    var temp_type_name = dev_type_match(notimeout_list[list_ind].blklist[i]);
+    var temp_type_name = Arco.block.dev_type_match(notimeout_list[list_ind].blklist[i]);
     component_obj.name = notimeout_list[list_ind].blklist[i];
     component_obj.type = temp_type_name;
     component_obj.behavior = new Object();
@@ -17,7 +18,7 @@ function and2cdl(blkname, list_ind) {
     component_list.push(component_obj);
   }
   var component_obj = new Object();
-  var temp_type_name = dev_type_match("AndFinish");
+  var temp_type_name = Arco.block.dev_type_match("AndFinish");
   component_obj.name = "AndFinish" + "ID" + name_split[1];
   component_obj.type = temp_type_name;
   component_obj.behavior = new Object();
@@ -40,7 +41,7 @@ function and2cdl(blkname, list_ind) {
 
 }
 
-function or2cdl(blkname, list_ind) {
+Arco.cdl['or2cdl'] = function (blkname, list_ind) {
   var or_name = blkname;
   var name_split = or_name.split("ID");
   var list_ind = list_ind;
@@ -50,7 +51,7 @@ function or2cdl(blkname, list_ind) {
   //从or_begin到or_end生成component
   for (var i = or_begin; i <= or_end; i++) {
     var component_obj = new Object();
-    var temp_type_name = dev_type_match(notimeout_list[list_ind].blklist[i]);
+    var temp_type_name = Arco.block.dev_type_match(notimeout_list[list_ind].blklist[i]);
     component_obj.name = notimeout_list[list_ind].blklist[i];
     component_obj.type = temp_type_name;
     component_obj.behavior = new Object();
@@ -59,7 +60,7 @@ function or2cdl(blkname, list_ind) {
     component_list.push(component_obj);
   }
   var component_obj = new Object();
-  var temp_type_name = dev_type_match("OrFinish");
+  var temp_type_name = Arco.block.dev_type_match("OrFinish");
   component_obj.name = "OrFinish" + "ID" + name_split[1];
   component_obj.type = temp_type_name;
   component_obj.behavior = new Object();
@@ -81,7 +82,7 @@ function or2cdl(blkname, list_ind) {
 
 }
 
-function branch2cdl(blkname, list_ind) {
+Arco.cdl['branch2cdl'] = function (blkname, list_ind) {
   var branch_name = blkname;
   var name_split = branch_name.split("ID");
   var list_ind = list_ind;
@@ -95,7 +96,7 @@ function branch2cdl(blkname, list_ind) {
     branch_end = branch_end - 1;
     for (var i = branch_begin; i <= branch_end; i++) {
       var component_obj = new Object();
-      var temp_type_name = dev_type_match(notimeout_list[list_ind].blklist[i]);
+      var temp_type_name = Arco.block.dev_type_match(notimeout_list[list_ind].blklist[i]);
       component_obj.name = notimeout_list[list_ind].blklist[i];
       //alert( component_obj.name+"!!!!!!!");
       component_obj.type = temp_type_name;
@@ -161,7 +162,7 @@ function branch2cdl(blkname, list_ind) {
     branch_end = branch_end - 1;
     for (var i = branch_begin; i <= branch_end; i++) {
       var component_obj = new Object();
-      var temp_type_name = dev_type_match(notimeout_list[list_ind].blklist[i]);
+      var temp_type_name = Arco.block.dev_type_match(notimeout_list[list_ind].blklist[i]);
       component_obj.name = notimeout_list[list_ind].blklist[i];
       //alert( component_obj.name+"!!!!!!!");
       component_obj.type = temp_type_name;
@@ -226,7 +227,7 @@ function branch2cdl(blkname, list_ind) {
   } else { //无嵌套
     for (var i = branch_begin; i <= branch_end; i++) {
       var component_obj = new Object();
-      var temp_type_name = dev_type_match(notimeout_list[list_ind].blklist[i]);
+      var temp_type_name = Arco.block.dev_type_match(notimeout_list[list_ind].blklist[i]);
       component_obj.name = notimeout_list[list_ind].blklist[i];
       component_obj.type = temp_type_name;
       component_obj.behavior = new Object();
@@ -273,7 +274,7 @@ function branch2cdl(blkname, list_ind) {
 
 }
 
-function for2cdl(blkname, list_ind) {
+Arco.cdl['for2cdl'] = function (blkname, list_ind) {
   var for_list = new Array();
   var for_type_list = new Array();
   var for_name = blkname;
@@ -295,6 +296,7 @@ function for2cdl(blkname, list_ind) {
   for_type_list.push("Positive");
   for_type_list.push("Zero");
   var for_value = 0;
+
   for (var i = 0; i < notimeout_list[list_ind].blklist.length; i++) {
 
     if (notimeout_list[list_ind].blklist[i] == for_name) {
@@ -310,7 +312,7 @@ function for2cdl(blkname, list_ind) {
     if (notimeout_list[list_ind].blklist[i].indexOf("text_print_delay") >= 0) {
       var component_obj = new Object();
       component_obj.name = notimeout_list[list_ind].blklist[i];
-      var temp_type_name = dev_type_match(notimeout_list[list_ind].blklist[i]);
+      var temp_type_name = Arco.block.dev_type_match(notimeout_list[list_ind].blklist[i]);
       component_obj.type = temp_type_name;
       component_obj.behavior = new Object();
       component_obj.behavior.name = "time";
@@ -326,7 +328,7 @@ function for2cdl(blkname, list_ind) {
     } else {
       var component_obj = new Object();
       component_obj.name = notimeout_list[list_ind].blklist[i];
-      var temp_type_name = dev_type_match(notimeout_list[list_ind].blklist[i]);
+      var temp_type_name = Arco.block.dev_type_match(notimeout_list[list_ind].blklist[i]);
       component_obj.type = temp_type_name;
       component_obj.behavior = new Object();
       component_obj.behavior.name = "";
@@ -503,7 +505,7 @@ function for2cdl(blkname, list_ind) {
 
 }
 
-function while2cdl(blkname, list_ind) {
+Arco.cdl['while2cdl'] = function (blkname, list_ind) {
   var while_list = new Array();
   var whiletype_list = new Array();
   var while_name = blkname;
@@ -525,7 +527,7 @@ function while2cdl(blkname, list_ind) {
   for (var i = while_con_begin; i <= while_con_end; i++) {
     var component_obj = new Object();
     component_obj.name = notimeout_list[list_ind].blklist[i];
-    var temp_type_name = dev_type_match(notimeout_list[list_ind].blklist[i]);
+    var temp_type_name = Arco.block.dev_type_match(notimeout_list[list_ind].blklist[i]);
     component_obj.type = temp_type_name;
     component_obj.behavior = new Object();
     component_obj.behavior.name = "";
@@ -535,7 +537,7 @@ function while2cdl(blkname, list_ind) {
   for (var i = while_body_begin; i <= while_body_end; i++) {
     var component_obj = new Object();
     component_obj.name = notimeout_list[list_ind].blklist[i];
-    var temp_type_name = dev_type_match(notimeout_list[list_ind].blklist[i]);
+    var temp_type_name = Arco.block.dev_type_match(notimeout_list[list_ind].blklist[i]);
     component_obj.type = temp_type_name;
     component_obj.behavior = new Object();
     if (notimeout_list[list_ind].blklist[i].indexOf("text_print_delay") >= 0) {
@@ -903,8 +905,7 @@ function while2cdl(blkname, list_ind) {
   connection_list.push(connection_obj);
 
 }
-
-function until2cdl(blkname, list_ind) {
+Arco.cdl['until2cdl'] = function (blkname, list_ind) {
   var until_list = new Array();
   var untiltype_list = new Array();
   var until_name = blkname;
@@ -924,7 +925,7 @@ function until2cdl(blkname, list_ind) {
   for (var i = until_con_begin; i <= until_con_end; i++) {
     var component_obj = new Object();
     component_obj.name = notimeout_list[list_ind].blklist[i];
-    var temp_type_name = dev_type_match(notimeout_list[list_ind].blklist[i]);
+    var temp_type_name = Arco.block.dev_type_match(notimeout_list[list_ind].blklist[i]);
     component_obj.type = temp_type_name;
     component_obj.behavior = new Object();
     component_obj.behavior.name = "";
@@ -950,7 +951,7 @@ function until2cdl(blkname, list_ind) {
     } else {
       var component_obj = new Object();
       component_obj.name = notimeout_list[list_ind].blklist[i];
-      var temp_type_name = dev_type_match(notimeout_list[list_ind].blklist[i]);
+      var temp_type_name = Arco.block.dev_type_match(notimeout_list[list_ind].blklist[i]);
       component_obj.type = temp_type_name;
       component_obj.behavior = new Object();
       component_obj.behavior.name = "";
@@ -1089,7 +1090,7 @@ function until2cdl(blkname, list_ind) {
 
 }
 
-function timeout2cdl(timeout_begin, timeout_end, list_ind, id) {
+Arco.cdl['timeout2cdl'] = function (timeout_begin, timeout_end, list_ind, id) {
   var timeout_begin = timeout_begin;
   var timeout_end = timeout_end;
   var list_ind = list_ind;
@@ -1182,5 +1183,66 @@ function timeout2cdl(timeout_begin, timeout_end, list_ind, id) {
   }
 
   rule_list.push(rule_obj);
+
+}
+
+Arco.cdl['delay2cdl'] = function (abr_blk_list, abr_val_list, i) {
+   //生成component和connection
+        var component_obj = new Object();
+        component_obj.name = abr_blk_list[i];
+        component_obj.type = "VDev";
+        component_obj.behavior = new Object();
+        component_obj.behavior.name = "time";
+        component_obj.behavior.value = abr_val_list[i];
+        component_list.push(component_obj);
+        var component_obj = new Object();
+        component_obj.name = "Delay" + "ID" + abr_blk_list[i].split("ID")[1];
+        component_obj.type = "Delay";
+        component_obj.behavior = new Object();
+        component_obj.behavior.name = "";
+        component_obj.behavior.value = "";
+        component_list.push(component_obj);
+
+        //生成connection，需判断之前组件类型
+        var connection_obj = new Object();
+        connection_obj.from = new Array();
+        connection_obj.to = new Array();
+        connection_obj.to.push(abr_blk_list[i]);
+        if (abr_blk_list[i - 1].indexOf("controls_and") >= 0) {
+          var inname_split = abr_blk_list[i - 1].split("ID");
+          connection_obj.from.push("AndFinish" + "ID" + inname_split[1]); //存入1个from
+        } else if (abr_blk_list[i - 1].indexOf("controls_or") >= 0) {
+          var inname_split = abr_blk_list[i - 1].split("ID");
+          connection_obj.from.push("OrFinish" + "ID" + inname_split[1]); //存入1个from
+        } else if (abr_blk_list[i - 1].indexOf("text_print_delay") >= 0) {
+          var inname_split = abr_blk_list[i - 1].split("ID");
+          connection_obj.from.push("Delay" + "ID" + inname_split[1]); //存入1个from
+        } else if (abr_blk_list[i - 1].indexOf("controls_repeat_for") >= 0) {
+          var inname_split = abr_blk_list[i - 1].split("ID");
+          connection_obj.from.push("ForEnd" + "ID" + inname_split[1]); //存入1个from
+        } else if (abr_blk_list[i - 1].indexOf("controls_repeat_while") >= 0) {
+          var inname_split = abr_blk_list[i - 1].split("ID");
+          connection_obj.from.push("WhileFinish" + "ID" + inname_split[1]); //存入1个from
+          connection_list.push(connection_obj);
+          var connection_obj = new Object();
+          connection_obj.from = new Array();
+          connection_obj.to = new Array();
+          connection_obj.to.push(abr_blk_list[i]);
+          connection_obj.from.push("WhileEnd" + "ID" + inname_split[1]); //存入1个from
+        } else if (abr_blk_list[i - 1].indexOf("controls_repeat_until") >= 0) //前面为until
+        {
+          var inname_split = abr_blk_list[i - 1].split("ID");
+          connection_obj.from.push("UntilEnd" + "ID" + inname_split[1]); //存入1个from
+        } else {
+          connection_obj.from.push(abr_blk_list[i - 1]); //存入1个from
+        }
+        connection_list.push(connection_obj);
+        var connection_obj = new Object();
+        connection_obj.from = new Array();
+        connection_obj.to = new Array();
+        connection_obj.to.push("Delay" + "ID" + abr_blk_list[i].split("ID")[1]);
+        connection_obj.from.push(abr_blk_list[i]);
+
+        connection_list.push(connection_obj);
 
 }
