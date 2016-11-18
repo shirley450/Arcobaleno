@@ -1246,3 +1246,125 @@ Arco.cdl['delay2cdl'] = function (abr_blk_list, abr_val_list, i) {
         connection_list.push(connection_obj);
 
 }
+
+Arco.cdl['device2cdl'] = function(abr_blk_list, i) {
+
+        var component_obj = new Object();
+        var temp_type_name = Arco.block.dev_type_match(abr_blk_list[i]);
+        component_obj.name = abr_blk_list[i];
+        component_obj.type = temp_type_name;
+
+        component_obj.behavior = new Object();
+        component_obj.behavior.name = "";
+        component_obj.behavior.value = "";
+        component_list.push(component_obj);
+
+        var name_split = abr_blk_list[i - 1].split("ID"); //以ID进行划分
+        if (i < abr_blk_list.length - 1 && i > 0) //不是最后一个和第一个
+        {
+          var connection_obj = new Object();
+          connection_obj.from = new Array();
+          connection_obj.to = new Array();
+          connection_obj.to.push(abr_blk_list[i]);
+          //判断前一个的类型
+          if (abr_blk_list[i - 1].indexOf("text_print_delay") >= 0) {
+
+            connection_obj.from.push("Delay" + "ID" + name_split[1]); //存入1个from
+
+          } else if (abr_blk_list[i - 1].indexOf("controls_and") >= 0) {
+
+            connection_obj.from.push("AndFinish" + "ID" + name_split[1]); //存入1个from
+
+          } else if (abr_blk_list[i - 1].indexOf("controls_or") >= 0) {
+
+            connection_obj.from.push("OrFinish" + "ID" + name_split[1]); //存入1个from
+
+          } else if (abr_blk_list[i - 1].indexOf("controls_branch") >= 0) {
+
+            var branch_andor = notimeout_list[j].blklist[blk_ind_info.branchblk[j].begin[name_split[1]]].split("ID");
+
+            if (branch_andor.indexOf("controls_and") >= 0) {
+
+              connection_obj.from.push("OrFinish" + "ID" + branch_andor[1]); //存入1个from
+
+            } else if (branch_andor.indexOf("controls_or") >= 0) {
+
+              connection_obj.from.push("AndFinish" + "ID" + branch_andor[1]); //存入1个from
+
+            }
+          } else if (abr_blk_list[i - 1].indexOf("controls_repeat_for") >= 0) {
+
+            connection_obj.from.push("ForEnd" + name_split[1]); //存入1个from
+
+          } else if (abr_blk_list[i - 1].indexOf("controls_repeat_while") >= 0) {
+
+            connection_obj.from.push("WhileFinish" + "ID" + name_split[1]); //存入1个from
+            connection_list.push(connection_obj);
+            var connection_obj = new Object();
+            connection_obj.from = new Array();
+            connection_obj.to = new Array();
+            connection_obj.to.push(abr_blk_list[i]);
+            connection_obj.from.push("WhileEnd" + "ID" + name_split[1]); //存入1个from
+
+          } else if (abr_blk_list[i - 1].indexOf("controls_repeat_until") >= 0){ //前面为until
+
+            connection_obj.from.push("UntilEnd" + "ID" + name_split[1]); //存入1个from
+
+          } else {
+
+            connection_obj.from.push(abr_blk_list[i - 1]);
+          }
+
+          connection_list.push(connection_obj);
+
+        } else if (i == abr_blk_list.length - 1){
+         //当最后的组件是一般组件时
+        
+          var connection_obj = new Object();
+          connection_obj.from = new Array();
+          connection_obj.to = new Array();
+          connection_obj.to.push(abr_blk_list[i]);
+          //判断前一个的类型
+          if (abr_blk_list[i - 1].indexOf("controls_and") >= 0) {
+            //var name_split = abr_blk_list[i - 1].split("ID"); //以ID进行划分
+            connection_obj.from.push("AndFinish" + "ID" + name_split[1]); //存入1个from
+          } else if (abr_blk_list[i - 1].indexOf("text_print_delay") >= 0) {
+            //var name_split = abr_blk_list[i - 1].split("ID"); //以ID进行划分
+            connection_obj.from.push("Delay" + "ID" + name_split[1]); //存入1个from，，生成or里面包含组件个数的connection
+          } else if (abr_blk_list[i - 1].indexOf("controls_or") >= 0) {
+            //var name_split = abr_blk_list[i - 1].split("ID"); //以ID进行划分
+            connection_obj.from.push("OrFinish" + "ID" + name_split[1]); //存入1个from，，生成or里面包含组件个数的connection
+          } else if (abr_blk_list[i - 1].indexOf("controls_branch") >= 0) {
+            //var name_split = abr_blk_list[i - 1].split("ID"); //以ID进行划分
+            var branch_andor = notimeout_list[j].blklist[blk_ind_info.branchblk[j].begin[name_split[1]]].split("ID");
+            if (branch_andor.indexOf("controls_and") >= 0) {
+              connection_obj.from.push("OrFinish" + "ID" + branch_andor[1]); //存入1个from
+            } else if (branch_andor.indexOf("controls_or") >= 0) {
+              connection_obj.from.push("AndFinish" + "ID" + branch_andor[1]); //存入1个from
+            }
+
+          } else if (abr_blk_list[i - 1].indexOf("controls_repeat_for") >= 0) {
+            //var name_split = abr_blk_list[i - 1].split("ID"); //以ID进行划分
+            connection_obj.from.push("ForEnd" + "ID" + name_split[1]); //存入1个from
+          } else if (abr_blk_list[i - 1].indexOf("controls_repeat_while") >= 0) {
+            //var name_split = abr_blk_list[i - 1].split("ID"); //以ID进行划分
+            connection_obj.from.push("WhileFinish" + "ID" + name_split[1]); //存入1个from
+            connection_list.push(connection_obj);
+            var connection_obj = new Object();
+            connection_obj.from = new Array();
+            connection_obj.to = new Array();
+            connection_obj.to.push(abr_blk_list[i]);
+            connection_obj.from.push("WhileEnd" + "ID" + name_split[1]); //存入1个from
+
+          } else if (abr_blk_list[i - 1].indexOf("controls_repeat_until") >= 0) //前面为until
+          {
+            //var name_split = abr_blk_list[i - 1].split("ID"); //以ID进行划分
+            connection_obj.from.push("UntilEnd" + "ID" + name_split[1]); //存入1个from
+          } else {
+            
+            connection_obj.from.push(abr_blk_list[i - 1]);
+          }
+          connection_list.push(connection_obj);
+
+        }
+}

@@ -1,4 +1,4 @@
-Arco.cdl['extract_component_and_connection'] = function(abr_list) {
+Arco.cdl['extract_components_and_connections'] = function(abr_list) {
 
 
   for (var j = 0; j < abr_list.length; j++) {
@@ -36,110 +36,14 @@ Arco.cdl['extract_component_and_connection'] = function(abr_list) {
 
       } else {
         //  ordinary devices
+        Arco.cdl.device2cdl(abr_blk_list, i);
 
-        var component_obj = new Object();
-        var temp_type_name = Arco.block.dev_type_match(abr_blk_list[i]);
-        component_obj.name = abr_blk_list[i];
-        component_obj.type = temp_type_name;
-
-        component_obj.behavior = new Object();
-        component_obj.behavior.name = "";
-        component_obj.behavior.value = "";
-        component_list.push(component_obj);
-
-        var name_split = abr_blk_list[i - 1].split("ID"); //以ID进行划分
-        if (i < abr_blk_list.length - 1 && i > 0) //不是最后一个和第一个
-        {
-          var connection_obj = new Object();
-          connection_obj.from = new Array();
-          connection_obj.to = new Array();
-          connection_obj.to.push(abr_blk_list[i]);
-          //var name_split = abr_blk_list[i - 1].split("ID"); //以ID进行划分
-          //判断前一个的类型
-          if (abr_blk_list[i - 1].indexOf("text_print_delay") >= 0) {
-
-            connection_obj.from.push("Delay" + "ID" + name_split[1]); //存入1个from
-          } else if (abr_blk_list[i - 1].indexOf("controls_and") >= 0) {
-            connection_obj.from.push("AndFinish" + "ID" + name_split[1]); //存入1个from
-          } else if (abr_blk_list[i - 1].indexOf("controls_or") >= 0) {
-            connection_obj.from.push("OrFinish" + "ID" + name_split[1]); //存入1个from
-          } else if (abr_blk_list[i - 1].indexOf("controls_branch") >= 0) {
-            var branch_andor = notimeout_list[j].blklist[blk_ind_info.branchblk[j].begin[name_split[1]]].split("ID");
-            if (branch_andor.indexOf("controls_and") >= 0) {
-              connection_obj.from.push("OrFinish" + "ID" + branch_andor[1]); //存入1个from
-            } else if (branch_andor.indexOf("controls_or") >= 0) {
-              connection_obj.from.push("AndFinish" + "ID" + branch_andor[1]); //存入1个from
-            }
-          } else if (abr_blk_list[i - 1].indexOf("controls_repeat_for") >= 0) {
-            connection_obj.from.push("ForEnd" + name_split[1]); //存入1个from
-          } else if (abr_blk_list[i - 1].indexOf("controls_repeat_while") >= 0) {
-            connection_obj.from.push("WhileFinish" + "ID" + name_split[1]); //存入1个from
-            connection_list.push(connection_obj);
-            var connection_obj = new Object();
-            connection_obj.from = new Array();
-            connection_obj.to = new Array();
-            connection_obj.to.push(abr_blk_list[i]);
-            connection_obj.from.push("WhileEnd" + "ID" + name_split[1]); //存入1个from
-          } else if (abr_blk_list[i - 1].indexOf("controls_repeat_until") >= 0) //前面为until
-          {
-            connection_obj.from.push("UntilEnd" + "ID" + name_split[1]); //存入1个from
-          } else {
-            connection_obj.from.push(abr_blk_list[i - 1]);
-          }
-          connection_list.push(connection_obj);
-
-        } else if (i == abr_blk_list.length - 1){
-         //当最后的组件是一般组件时
-        
-          var connection_obj = new Object();
-          connection_obj.from = new Array();
-          connection_obj.to = new Array();
-          connection_obj.to.push(abr_blk_list[i]);
-          //判断前一个的类型
-          if (abr_blk_list[i - 1].indexOf("controls_and") >= 0) {
-            //var name_split = abr_blk_list[i - 1].split("ID"); //以ID进行划分
-            connection_obj.from.push("AndFinish" + "ID" + name_split[1]); //存入1个from
-          } else if (abr_blk_list[i - 1].indexOf("text_print_delay") >= 0) {
-            //var name_split = abr_blk_list[i - 1].split("ID"); //以ID进行划分
-            connection_obj.from.push("Delay" + "ID" + name_split[1]); //存入1个from，，生成or里面包含组件个数的connection
-          } else if (abr_blk_list[i - 1].indexOf("controls_or") >= 0) {
-            //var name_split = abr_blk_list[i - 1].split("ID"); //以ID进行划分
-            connection_obj.from.push("OrFinish" + "ID" + name_split[1]); //存入1个from，，生成or里面包含组件个数的connection
-          } else if (abr_blk_list[i - 1].indexOf("controls_branch") >= 0) {
-            //var name_split = abr_blk_list[i - 1].split("ID"); //以ID进行划分
-            var branch_andor = notimeout_list[j].blklist[blk_ind_info.branchblk[j].begin[name_split[1]]].split("ID");
-            if (branch_andor.indexOf("controls_and") >= 0) {
-              connection_obj.from.push("OrFinish" + "ID" + branch_andor[1]); //存入1个from
-            } else if (branch_andor.indexOf("controls_or") >= 0) {
-              connection_obj.from.push("AndFinish" + "ID" + branch_andor[1]); //存入1个from
-            }
-
-          } else if (abr_blk_list[i - 1].indexOf("controls_repeat_for") >= 0) {
-            //var name_split = abr_blk_list[i - 1].split("ID"); //以ID进行划分
-            connection_obj.from.push("ForEnd" + "ID" + name_split[1]); //存入1个from
-          } else if (abr_blk_list[i - 1].indexOf("controls_repeat_while") >= 0) {
-            //var name_split = abr_blk_list[i - 1].split("ID"); //以ID进行划分
-            connection_obj.from.push("WhileFinish" + "ID" + name_split[1]); //存入1个from
-            connection_list.push(connection_obj);
-            var connection_obj = new Object();
-            connection_obj.from = new Array();
-            connection_obj.to = new Array();
-            connection_obj.to.push(abr_blk_list[i]);
-            connection_obj.from.push("WhileEnd" + "ID" + name_split[1]); //存入1个from
-          } else if (abr_blk_list[i - 1].indexOf("controls_repeat_until") >= 0) //前面为until
-          {
-            //var name_split = abr_blk_list[i - 1].split("ID"); //以ID进行划分
-            connection_obj.from.push("UntilEnd" + "ID" + name_split[1]); //存入1个from
-          } else {
-            connection_obj.from.push(abr_blk_list[i - 1]);
-          }
-          connection_list.push(connection_obj);
-
-        }
       }
     }
   }
 
+
+  //Arco.cdl.remove_duplicates();
   //查重 对component进行排查
   var del_comp = new Array();
   for (var i = 0; i < (component_list.length - 1); i++) {
@@ -260,7 +164,7 @@ Arco.cdl['extract_component_and_connection'] = function(abr_list) {
 
 }
 
-Arco.cdl['extract_rule'] = function(abr_list){
+Arco.cdl['extract_rules'] = function(abr_list){
   for (var i = 0; i < blk_list.length; i++) {
     for (var j = 0; j < blk_list[i].blklist.length; j++) {
       if (blk_list[i].blklist[j].indexOf("text_print_timeout") >= 0) {
@@ -275,16 +179,17 @@ Arco.cdl['extract_rule'] = function(abr_list){
 
 Arco.cdl['extract'] = function(abr_list) {
   //第一遍生成component、connection、rulelist
-  Arco.cdl.extract_component_and_connection(abr_list);
+  Arco.cdl.extract_components_and_connections(abr_list);
   //有timeout存在时，生成相应的rule
-  Arco.cdl.extract_rule(abr_list);
+  Arco.cdl.extract_rules(abr_list);
 }
 
-Arco.cdl['generate_rule'] = function(rule_list_element) {
+Arco.cdl['generate_rules'] = function(rule_list_element) {
   for (var i = 0; i < rule_list.length; i++) {
     var rule_element = document.createElement("rule");
     rule_list_element.appendChild(rule_element);
     rule_element.setAttribute("name", rule_list[i].name);
+
     if (rule_list[i].name.indexOf("repeat") >= 0) {
       var from_element = document.createElement("from");
       from_element = rule_element.appendChild(from_element);
@@ -312,7 +217,7 @@ Arco.cdl['generate_rule'] = function(rule_list_element) {
   return rule_list_element;
 }
 
-Arco.cdl['generate_connection'] = function(connection_list_element){
+Arco.cdl['generate_connections'] = function(connection_list_element){
   for (var i = 0; i < connection_list.length; i++) {
     var connection_element = document.createElement("connection");
     connection_list_element.appendChild(connection_element);
@@ -333,7 +238,7 @@ Arco.cdl['generate_connection'] = function(connection_list_element){
   return connection_list_element;
 }
 
-Arco.cdl['generate_component'] = function(component_list_element){
+Arco.cdl['generate_components'] = function(component_list_element){
   for (var i = 0; i < component_list.length; i++) {
     var component_element = document.createElement("component");
     component_list_element.appendChild(component_element);
@@ -388,11 +293,11 @@ Arco.cdl['generate'] = function(xmlcdl) {
   rule_list_element = b_element.appendChild(rule_list_element);
   rule_list_element.setAttribute("name", "rule");
 
-  component_list_element = Arco.cdl.generate_component(component_list_element);
+  component_list_element = Arco.cdl.generate_components(component_list_element);
 
-  connection_list_element = Arco.cdl.generate_connection(connection_list_element);
+  connection_list_element = Arco.cdl.generate_connections(connection_list_element);
 
-  rule_list_element = Arco.cdl.generate_rule(rule_list_element);
+  rule_list_element = Arco.cdl.generate_rules(rule_list_element);
   
   var cdl_data = Blockly.Xml.domToText(xmlcdl); //实现输出xml
   var fileName = window.prompt('What would you like to name your file?', 'cdlXML');

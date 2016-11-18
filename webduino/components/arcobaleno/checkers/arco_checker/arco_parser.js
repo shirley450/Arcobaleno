@@ -88,247 +88,201 @@ Arco.block['deviceComponentsParse'] = function (b_f_name, list_obj, b_element) {
   }
       return b_element;
 }
- 
-   /* else if (b_f_name == "led") {
-      led_name = b_element.getElementsByTagName("FIELD")[0].childNodes[0].nodeValue; //对应led显示的值
+ Arco.block['parse_forblk'] = function (element, list_obj) {
+  var b_element = element;
+  //value部分
+  var for_value = b_element.childNodes[0]; //对应value标签
+  var for_abr = for_value.getElementsByTagName("field")[0].childNodes[0].nodeValue; //对应abr的值
+  list_obj.blkvallist.push(for_abr);
+  var for_statement = b_element.childNodes[1]; //对应statement标签
+  list_obj.blklist.push("for_statement" + "ID" + id_count["controls_repeat_for"]);
+  var l_for_id = id_count["controls_repeat_for"];
+  list_obj.blkvallist.push("");
+  id_count["controls_repeat_for"]++;
+  var for_statement_end = Arco.block.parse_element(for_statement,list_obj);
 
-      if (led_name != "LED") //如果界面输入的不是默认LED
-      {
-        if (led_name in led_info) //重复标记同一个组件
-        {
-          led_id_inner = led_info[led_name];
-          b_f_name = b_f_name + "ID" + led_id_inner;
-          list_obj.blklist.push(b_f_name); //往list_obj.blklist中放入block
-          list_obj.blkvallist.push("");
-        } else {
-          led_info[led_name] = led_id;
-          b_f_name = b_f_name + "ID" + led_id;
-          list_obj.blklist.push(b_f_name); //往list_obj.blklist中放入block
+  list_obj.blklist.push("for_statement" + "ID" + l_for_id);
 
-        }
+  list_obj.blkvallist.push("");
 
-      } else {
-        b_f_name = b_f_name + "ID" + led_id;
-        list_obj.blklist.push(b_f_name); //往list_obj.blklist中放入block
-        list_obj.blkvallist.push("");
-      }
-      led_id++;
+  if (b_element.childNodes.length > 2) {
+    //next部分
+    var for_next = b_element.childNodes[2]; //对应next标签
+    b_element = for_next;
+  } else {
+    b_element = for_statement_end;
+  }
 
-      if (b_element.childNodes.length > 1) //取next
-      {
-        b_element = b_element.childNodes[1];
+  return b_element;
+}
 
-        
-      } else if (b_element.childNodes.length ==1) {//组件在最后
-        b_element = b_element.getElementsByTagName("FIELD")[0].childNodes[0];
-      }
-    }
-    else if (b_f_name == "switch") {
-      switch_name = b_element.getElementsByTagName("FIELD")[0].childNodes[0].nodeValue; //对应led显示的值
+Arco.block['parse_andblk'] = function (element,list_obj) {
 
-      if (switch_name != "SWITCH") //如果界面输入的不是默认SWITCH
-      {
-        if (switch_name in switch_info) //重复标记同一个组件
-        {
-          switch_id_inner = switch_info[switch_name];
-          b_f_name = b_f_name + "ID" + switch_id_inner;
-          list_obj.blklist.push(b_f_name); //往list_obj.blklist中放入block
-          list_obj.blkvallist.push("");
-        } else {
-          switch_info[switch_name] = switch_id;
-          b_f_name = b_f_name + "ID" + switch_id;
-          list_obj.blklist.push(b_f_name); //往list_obj.blklist中放入block
-          list_obj.blkvallist.push("");
+  var b_element = element;
+  list_obj.blkvallist.push("");
+  var and_statement = b_element.childNodes[0]; //statement节点
+  list_obj.blklist.push("and_statement" + "ID" + id_count["controls_and"]); //放入statement
+  list_obj.blkvallist.push("");
+  var l_and_id = id_count["controls_and"];
+  id_count["controls_and"]++;
+  var and_statement_end = Arco.block.parse_element(and_statement,list_obj);
+  list_obj.blklist.push("and_statement" + "ID" + l_and_id); //放入statement
+  list_obj.blkvallist.push("");
+  if (b_element.childNodes.length > 1) {
+    var and_next = b_element.childNodes[1]; //and next的节点
+    b_element = and_next;
+  } else {
+    b_element = and_statement_end;
+  }
 
-        }
+  return b_element;
+}
 
-      } else {
-        b_f_name = b_f_name + "ID" + switch_id;
-        list_obj.blklist.push(b_f_name); //往list_obj.blklist中放入block
-        list_obj.blkvallist.push("");
-      }
-      switch_id++;
-      if (b_element.childNodes.length > 1) //取next
-      {
-        b_element = b_element.childNodes[1];
-     
-      } else if (b_element.childNodes.length == 1) {
-        b_element = b_element.getElementsByTagName("FIELD")[0].childNodes[0];
+Arco.block['parse_orblk'] = function (element,list_obj) {
 
-      }
-    }   
-    else if (b_f_name == "probe") {
-      probe_name = b_element.getElementsByTagName("FIELD")[0].childNodes[0].nodeValue; //对应led显示的值
+  var b_element = element;
+  list_obj.blkvallist.push("");
+  var or_statement = b_element.childNodes[0]; //statement节点
+  list_obj.blklist.push("or_statement" + "ID" + id_count["controls_or"]); //放入statement
+  list_obj.blkvallist.push("");
+  var l_or_id = id_count["controls_or"];
+  id_count["controls_or"]++;
+  var or_statement_end = Arco.block.parse_element(or_statement,list_obj);
+  list_obj.blklist.push("or_statement" + "ID" + l_or_id); //放入statement
+  list_obj.blkvallist.push("");
+  if (b_element.childNodes.length > 1) {
+    var or_next = b_element.childNodes[1]; //and next的节点
+    b_element = or_next;
+  } else {
+    b_element = or_statement_end;
+  }
 
-      if (probe_name != "Probe") //如果界面输入的不是默认SWITCH
-      {
-        if (probe_name in probe_info) //重复标记同一个组件
-        {
-          probe_id_inner = probe_info[probe_name];
-          b_f_name = b_f_name + "ID" + probe_id_inner;
-          list_obj.blklist.push(b_f_name); //往list_obj.blklist中放入block
-          list_obj.blkvallist.push("");
-        } else {
-          probe_info[probe_name] = probe_id;
-          b_f_name = b_f_name + "ID" + probe_id;
-          list_obj.blklist.push(b_f_name); //往list_obj.blklist中放入block
-          list_obj.blkvallist.push("");
+  return b_element;
+}
 
-        }
+Arco.block['parse_branchblk'] = function (element,list_obj) {
 
-      } else {
-        b_f_name = b_f_name + "ID" + probe_id;
-        list_obj.blklist.push(b_f_name); //往list_obj.blklist中放入block
-        list_obj.blkvallist.push("");
-      }
-      probe_id++;
-      if (b_element.childNodes.length > 1) //取next
-      {
-        b_element = b_element.childNodes[1];
-     
-      } else if (b_element.childNodes.length == 1) {
-        b_element = b_element.getElementsByTagName("FIELD")[0].childNodes[0];
+  var b_element = element;
+  list_obj.blkvallist.push("");
+  var branch_statement = b_element.childNodes[0]; //statement节点
+  list_obj.blklist.push("branch_statement" + "ID" + id_count["controls_branch"]); //放入statement
+  list_obj.blkvallist.push("");
+  var l_branch_id = id_count["controls_branch"];
+  id_count["controls_branch"]++;
+  var branch_statement_end = Arco.block.parse_element(branch_statement,list_obj);
+  list_obj.blklist.push("branch_statement" + "ID" + l_branch_id); //放入statement
+  list_obj.blkvallist.push("");
+  if (b_element.childNodes.length > 1) {
+    var branch_next = b_element.childNodes[1]; //branch next的节点
+    b_element = branch_next;
+  } else {
+    b_element = branch_statement_end;
+  }
 
-      }
-    }  
-    else if (b_f_name == "textgen") {
-      textgen_name = b_element.getElementsByTagName("FIELD")[0].childNodes[0].nodeValue; //对应led显示的值
+  return b_element;
+}
 
-      if (textgen_name != "TextGen") //如果界面输入的不是默认SWITCH
-      {
-        if (textgen_name in textgen_info) //重复标记同一个组件
-        {
-          textgen_id_inner = textgen_info[textgen_name];
-          b_f_name = b_f_name + "ID" + textgen_id_inner;
-          list_obj.blklist.push(b_f_name); //往list_obj.blklist中放入block
-          list_obj.blkvallist.push("");
-        } else {
-          textgen_info[textgen_name] = textgen_id;
-          b_f_name = b_f_name + "ID" + textgen_id;
-          list_obj.blklist.push(b_f_name); //往list_obj.blklist中放入block
-          list_obj.blkvallist.push("");
+Arco.block['parse_whileblk'] = function (element,list_obj) {
 
-        }
+  var b_element = element;
+  list_obj.blkvallist.push("");
+  var con_statement = b_element.childNodes[0]; //对应con标签
+  list_obj.blklist.push("con_statement" + "ID" + id_count["controls_repeat_while"]); //放入statement
+  var l_while_id = id_count["controls_repeat_while"];
+  list_obj.blkvallist.push("");
+  id_count["controls_repeat_while"]++;
+  con_statement = con_statement.childNodes[0]; //获得con中的第一个block
+  Arco.block.parse_element(con_statement,list_obj);
+  list_obj.blklist.push("con_statement" + "ID" + l_while_id); //放入statement
+  list_obj.blkvallist.push("");
+  var body_statement = b_element.childNodes[1]; //对应body标签
+  list_obj.blklist.push("body_statement" + "ID" + l_while_id); //放入statement
+  list_obj.blkvallist.push("");
+  var while_end = Arco.block.parse_element(body_statement,list_obj);
+  list_obj.blklist.push("body_statement" + "ID" + l_while_id); //放入statement
+  list_obj.blkvallist.push("");
+  if (b_element.childNodes.length > 2) {
+    var while_next = b_element.childNodes[2]; //对应next标签
+    b_element = while_next;
+  } else {
+    b_element = while_end;
+  }
 
-      } else {
-        b_f_name = b_f_name + "ID" + textgen_id;
-        list_obj.blklist.push(b_f_name); //往list_obj.blklist中放入block
-        list_obj.blkvallist.push("");
-      }
-      textgen_id++;
-      if (b_element.childNodes.length > 1) //取next
-      {
-        b_element = b_element.childNodes[1];
-     
-      } else if (b_element.childNodes.length == 1) {
-        b_element = b_element.getElementsByTagName("FIELD")[0].childNodes[0];
+  return b_element;
+}
 
-      }
-    }  
-    else if (b_f_name == "relay") {
-      
-      relay_name = b_element.getElementsByTagName("FIELD")[0].childNodes[0].nodeValue; //对应led显示的值
+Arco.block['parse_untilblk'] = function (element,list_obj) {
+  var b_element = element;
+  list_obj.blkvallist.push("");
+  var body_statement = b_element.childNodes[0]; //对应body标签
+  list_obj.blklist.push("body_statement" + "ID" + id_count["controls_repeat_until"]); //放入statement
+  list_obj.blkvallist.push("");
+  var l_until_id = id_count["controls_repeat_until"];
+  id_count["controls_repeat_until"];
+  var until_end = Arco.block.parse_element(body_statement,list_obj);
+  list_obj.blklist.push("body_statement" + "ID" + l_until_id); //放入statement
+  list_obj.blkvallist.push("");
+  var con_statement = b_element.childNodes[1]; //对应con标签
+  list_obj.blklist.push("con_statement" + "ID" + l_until_id); //放入statement
+  list_obj.blkvallist.push("");
+  con_statement = con_statement.childNodes[0]; //获得con中的第一个block
+  Arco.block.parse_element(con_statement,list_obj);
+  list_obj.blklist.push("con_statement" + "ID" + l_until_id); //放入statement
+  list_obj.blkvallist.push("");
 
-      if (relay_name != "RELAY") //如果界面输入的不是默认SWITCH
-      {
-        if (relay_name in relay_info) //重复标记同一个组件
-        {
-          relay_id_inner = relay_info[relay_name];
-          b_f_name = b_f_name + "ID" + relay_id_inner;
-          list_obj.blklist.push(b_f_name); //往list_obj.blklist中放入block
-          list_obj.blkvallist.push("");
-        } else {
-          relay_info[relay_name] = relay_id;
-          b_f_name = b_f_name + "ID" + relay_id;
-          list_obj.blklist.push(b_f_name); //往list_obj.blklist中放入block
-          list_obj.blkvallist.push("");
+  if (b_element.childNodes.length > 2) {
+    var until_next = b_element.childNodes[2]; //对应next标签
+    b_element = until_next;
+  } else {
+    b_element = until_end;
+  }
 
-        }
+  return b_element;
+}
 
-      } else {
-        b_f_name = b_f_name + "ID" + relay_id;
-        list_obj.blklist.push(b_f_name); //往list_obj.blklist中放入block
-        list_obj.blkvallist.push("");
-      }
-      relay_id++;
-      if (b_element.childNodes.length > 1) //取next
-      {
-        b_element = b_element.childNodes[1];
-        
-      } else if (b_element.childNodes.length == 1) {
-        b_element = b_element.getElementsByTagName("FIELD")[0].childNodes[0];
+Arco.block['parse_timeoutblk'] = function (element,list_obj) {
 
-      }
-    }   
-    else if (b_f_name == "pir") {
-      
-      pir_name = b_element.getElementsByTagName("FIELD")[0].childNodes[0].nodeValue; //对应led显示的值
+  var b_element = element;
+  //value部分
+  var timeout_value = b_element.childNodes[0]; //对应value标签
+  var timeout_abr = timeout_value.getElementsByTagName("field")[0].childNodes[0].nodeValue; //对应abr的值
+  list_obj.blkvallist.push(timeout_abr);
+   var timeout_statement = b_element.childNodes[1]; //对应element标签
+  list_obj.blklist.push("timeout_statement" + "ID" + id_count["text_print_timeout"]);
+    list_obj.blkvallist.push("");
+  var l_timeout_id = id_count["text_print_timeout"];
+  id_count["text_print_timeout"]++;
+  var timeout_statement_end = Arco.block.parse_element(timeout_statement,list_obj);
 
-      if (pir_name != "PIR") //如果界面输入的不是默认SWITCH
-      {
-        if (pir_name in pir_info) //重复标记同一个组件
-        {
-          pir_id_inner = pir_info[pir_name];
-          b_f_name = b_f_name + "ID" + pir_id_inner;
-          list_obj.blklist.push(b_f_name); //往list_obj.blklist中放入block
-          list_obj.blkvallist.push("");
-        } else {
-          pir_info[pir_name] = pir_id;
-          b_f_name = b_f_name + "ID" + pir_id;
-          list_obj.blklist.push(b_f_name); //往list_obj.blklist中放入block
-          list_obj.blkvallist.push("");
+  list_obj.blklist.push("timeout_statement" + "ID" + l_timeout_id);
+  list_obj.blkvallist.push("");
+  if (b_element.childNodes.length > 2) {
+    //next部分
+    var timeout_next = b_element.childNodes[2]; //对应next标签
+    b_element = timeout_next;
+  } else {
 
-        }
+    b_element = timeout_statement_end;
+  }
 
-      } else {
-        b_f_name = b_f_name + "ID" + pir_id;
-        list_obj.blklist.push(b_f_name); //往list_obj.blklist中放入block
-        list_obj.blkvallist.push("");
-      }
-      pir_id++;
-      if (b_element.childNodes.length > 1) //取next
-      {
-        b_element = b_element.childNodes[1];
-        
-      } else if (b_element.childNodes.length == 1) {
-        b_element = b_element.getElementsByTagName("FIELD")[0].childNodes[0];
+  return b_element;
+}
 
-      }
-    }   
-    else if (b_f_name == "button") {
-      
-      button_name = b_element.getElementsByTagName("FIELD")[0].childNodes[0].nodeValue; //对应led显示的值
 
-      if (button_name != "BUTTON") //如果界面输入的不是默认SWITCH
-      {
-        if (button_name in button_info) //重复标记同一个组件
-        {
-          button_id_inner = button_info[button_name];
-          b_f_name = b_f_name + "ID" + button_id_inner;
-          list_obj.blklist.push(b_f_name); //往list_obj.blklist中放入block
-          list_obj.blkvallist.push("");
-        } else {
-          button_info[button_name] = button_id;
-          b_f_name = b_f_name + "ID" + button_id;
-          list_obj.blklist.push(b_f_name); //往list_obj.blklist中放入block
-          list_obj.blkvallist.push("");
+Arco.block['parse_delayblk'] = function (element,list_obj) {
+  var b_element = element;
+  //value部分
+  var delay_value = b_element.childNodes[0]; //对应value标签
+  var delay_abr = delay_value.getElementsByTagName("field")[0].childNodes[0].nodeValue; //对应abr的值
+  list_obj.blkvallist.push(delay_abr);
+  id_count["delay"]++;
+  if (b_element.childNodes.length > 1) {
+    //next部分
+    var delay_next = b_element.childNodes[1]; //对应next标签
+    b_element = delay_next;
+  } else {
+    b_element = delay_value.getElementsByTagName("field")[0].childNodes[0];
+  }
 
-        }
-
-      } else {
-        b_f_name = b_f_name + "ID" + button_id;
-        list_obj.blklist.push(b_f_name); //往list_obj.blklist中放入block
-        list_obj.blkvallist.push("");
-      }
-      button_id++;
-      if (b_element.childNodes.length > 1) //取next
-      {
-        b_element = b_element.childNodes[1];
-        
-      } else if (b_element.childNodes.length == 1) {
-        b_element = b_element.getElementsByTagName("FIELD")[0].childNodes[0];
-
-      }
-    }*/
-
-  
+  return b_element;
+}
