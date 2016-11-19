@@ -1,4 +1,4 @@
-function general_blk_check(abr_list) //总体check缩进后的list
+Arco.block['general_blk_check'] = function(abr_list) //总体check缩进后的list
 {
  var erorr_num = 0;
   var find = 0;
@@ -101,7 +101,7 @@ function general_blk_check(abr_list) //总体check缩进后的list
   return erorr_num;
 }
 
-function blk_check(abr_list) {
+Arco.block['blk_check'] = function(abr_list) {
 
   var erorr_num = 0;
   //遍历abr_list,每一项进入相应函数
@@ -109,17 +109,13 @@ function blk_check(abr_list) {
     var abr_blk_list = abr_list[j].blklist;
     for (var i = 0; i < abr_blk_list.length; i++) {
       if (abr_blk_list[i].indexOf("controls_and") >= 0) {
-        var en_add = check_and(abr_blk_list[i], j);
+        var en_add = Arco.block.check_and(abr_blk_list[i], j);
       } else if (abr_blk_list[i].indexOf("controls_or") >= 0) {
-        var en_add = check_or(abr_blk_list[i], j);
+        var en_add =  Arco.block.check_or(abr_blk_list[i], j);
       } else if (abr_blk_list[i].indexOf("controls_repeat_for") >= 0) {
-        var en_add = check_for(abr_blk_list[i], j);
-      } else if (abr_blk_list[i].indexOf("controls_repeat_while") >= 0) {
-        var en_add = check_while(abr_blk_list[i], j);
-      } else if (abr_blk_list[i].indexOf("controls_repeat_until") >= 0) {
-        var en_add = check_until(abr_blk_list[i], j);   
+        var en_add =  Arco.block.check_for(abr_blk_list[i], j);
       } else if (abr_blk_list[i].indexOf("controls_branch") >= 0) {
-        var en_add = check_branch(abr_blk_list[i], j); 
+        var en_add =  Arco.block.check_branch(abr_blk_list[i], j); 
       }
        erorr_num = erorr_num + en_add;
     }
@@ -128,7 +124,7 @@ function blk_check(abr_list) {
   return erorr_num;
 }
 
-function check_and(blkname, list_ind) {
+Arco.block['check_and'] = function(blkname, list_ind) {
   var and_name = blkname;
   var name_split = and_name.split("ID");
   var list_ind = list_ind;
@@ -180,7 +176,7 @@ function check_and(blkname, list_ind) {
   return erorr_num;
 }
 
-function check_or(blkname, list_ind) {
+Arco.block['check_or'] = function(blkname, list_ind) {
   var or_name = blkname;
   var name_split = or_name.split("ID");
   var list_ind = list_ind;
@@ -234,7 +230,7 @@ function check_or(blkname, list_ind) {
 
 }
 
-function check_branch(blkname, list_ind) {
+Arco.block['check_branch'] = function(blkname, list_ind) {
   var branch_name = blkname;
   var name_split = branch_name.split("ID");
   var list_ind = list_ind;
@@ -294,7 +290,7 @@ function check_branch(blkname, list_ind) {
 
 }
 
-function check_for(blkname, list_ind) {
+Arco.block['check_for'] = function(blkname, list_ind) {
   var for_name = blkname;
   var name_split = for_name.split("ID");
   var list_ind = list_ind;
@@ -355,301 +351,7 @@ function check_for(blkname, list_ind) {
 
 }
 
-function check_while(blkname, list_ind) {
-  var while_name = blkname;
-  var name_split = while_name.split("ID");
-  var list_ind = list_ind;
-  var erorr_num = 0;
-  var find = 0;
-  var while_con_begin = blk_ind_info.whileblk[list_ind].conbegin[name_split[1]];
-  var while_con_end = blk_ind_info.whileblk[list_ind].conend[name_split[1]];;
-  var while_body_begin = blk_ind_info.whileblk[list_ind].bodybegin[name_split[1]];;
-  var while_body_end = blk_ind_info.whileblk[list_ind].bodyend[name_split[1]];;
-  //while只能在中间和最后
-  if (while_body_end == notimeout_list[list_ind].blklist.length - 2) //while在最后
-  {
-    for (var j = while_con_begin; j <= while_con_end; j++) {
-      var temp_type_name = Arco.block.ui_type_match(notimeout_list[list_ind].blklist[j]);
-      if (temp_type_name == "1") {
-        blk_begin.push(notimeout_list[list_ind].blklist[j]);
-      } else if (temp_type_name == "2" || temp_type_name == "6" || temp_type_name == "3" || temp_type_name == "5" || temp_type_name == "7") //and组件里含有源组件的属性的组件类型1,3,5,7，需要查找的是2、6
-      {
-
-        for (var i = 0; i < abr_list.length; i++) {
-          if (i != list_ind) {
-            for (var w = 1; w < abr_list[i].blklist.length; w++) {
-              if (abr_list[i].blklist[w] == notimeout_list[list_ind].blklist[j]) {
-                find = 1;
-              } else if (abr_list[i].blklist[w].indexOf("controls_branch") >= 0) {
-                var branch_name_split = abr_list[i].blklist[w].split("ID");
-                var branch_begin = blk_ind_info.branchblk[i].begin[branch_name_split[1]];
-                var branch_end = blk_ind_info.branchblk[i].end[branch_name_split[1]];
-                for (var t = branch_begin; t <= branch_end; t++) {
-                  if (notimeout_list[i].blklist[t] == notimeout_list[list_ind].blklist[j]) {
-                    find = 1;
-                  }
-                }
-              }
-            }
-          }
-        }
-        if ((find == 0 && temp_type_name == "2") || (find == 0 && temp_type_name == "6")) {
-          complie_info +="Error: 16 " + notimeout_list[list_ind].blklist[j] + " can not be put on the top of the list!"+"\n";
-          erorr_num++;
-        } else if (find == 1) {
-          find = 0;
-        } else if ((find == 0 && temp_type_name == "3") || (find == 0 && temp_type_name == "5") || (find == 0 && temp_type_name == "7")) {
-          blk_begin.push(notimeout_list[list_ind].blklist[j]);
-          find = 0;
-        }
-
-      } else if (temp_type_name == "4") {
-        complie_info +="Error: 17 " + notimeout_list[list_ind].blklist[j] + " can not be put on the top of the list!"+"\n";
-        erorr_num++;
-      }
-    }
-    //查最后一个是不是终端组件
-    var temp_type_name = Arco.block.ui_type_match(notimeout_list[list_ind].blklist[while_body_end]);
-     if (temp_type_name == "4" ) {
-      blk_end.push(notimeout_list[list_ind].blklist[while_body_end]);
-    }  else if (temp_type_name == "5" || temp_type_name == "6" || temp_type_name == "7") {
-      for (var i = 0; i < abr_list.length - 1; i++) {
-        if (i != list_ind) {
-          for (var w = 1; w < abr_list[i].blklist.length; w++) {
-            if ( notimeout_list[list_ind].blklist[while_body_end]== abr_list[j].blklist[w - 1]) {
-              find = 1;
-            }
-          }
-        }
-      }
-      if (find == 0) {
-        if ( notimeout_list[list_ind].blklist[while_body_end].indexOf("controls_repeat_for") < 0 &&  notimeout_list[list_ind].blklist[while_body_end].indexOf("controls_repeat_while") < 0 &&  notimeout_list[list_ind].blklist[while_body_end].indexOf("controls_repeat_until") < 0 &&  notimeout_list[list_ind].blklist[while_body_end].indexOf("controls_branch") < 0) {
-          blk_end.push( notimeout_list[list_ind].blklist[while_body_end]);
-        }
-      } else if (find == 1) {
-        find = 0;
-      }
-    }else  {
-      complie_info +="Error: 18 " +  notimeout_list[list_ind].blklist[while_body_end]  + " can not be put at the bottom of the list!"+"\n";
-      erorr_num++;
-    }
-
-    for (var i = while_body_begin; i < while_body_end; i++) {
-      var temp_type_name = Arco.block.ui_type_match(notimeout_list[list_ind].blklist[i]);
-      if (temp_type_name != "2" && temp_type_name != "3" && temp_type_name != "6" && temp_type_name != "7") {
-        complie_info +="Error: 19 " + notimeout_list[list_ind].blklist[i] + " can not be put in the middle of the list!"+"\n";
-        erorr_num++;
-      }
-
-    }
-
-  } else //while在中间
-  {
-    for (var j = while_con_begin; j <= while_con_end; j++) {
-      var temp_type_name = Arco.block.ui_type_match(notimeout_list[list_ind].blklist[j]);
-      if (temp_type_name == "1") {
-        blk_begin.push(notimeout_list[list_ind].blklist[j]);
-      } else if (temp_type_name == "2" || temp_type_name == "6" || temp_type_name == "3" || temp_type_name == "5" || temp_type_name == "7") //and组件里含有源组件的属性的组件类型1,3,5,7，需要查找的是2、6
-      {
-
-        for (var i = 0; i < abr_list.length; i++) {
-          if (i != list_ind) {
-            for (var w = 1; w < abr_list[i].blklist.length; w++) {
-              if (abr_list[i].blklist[w] == notimeout_list[list_ind].blklist[j]) {
-                find = 1;
-              } else if (abr_list[i].blklist[w].indexOf("controls_branch") >= 0) {
-                var branch_name_split = abr_list[i].blklist[w].split("ID");
-                var branch_begin = blk_ind_info.branchblk[i].begin[branch_name_split[1]];
-                var branch_end = blk_ind_info.branchblk[i].end[branch_name_split[1]];
-                for (var t = branch_begin; t <= branch_end; t++) {
-                  if (notimeout_list[i].blklist[t] == notimeout_list[list_ind].blklist[j]) {
-                    find = 1;
-                  }
-                }
-              }
-            }
-          }
-        }
-        if ((find == 0 && temp_type_name == "2") || (find == 0 && temp_type_name == "6")) {
-          complie_info +="Error:" + notimeout_list[list_ind].blklist[j] + " can not be put on the top of the list!"+"\n";
-          erorr_num++;
-        } else if (find == 1) {
-          find = 0;
-        } else if ((find == 0 && temp_type_name == "3") || (find == 0 && temp_type_name == "5") || (find == 0 && temp_type_name == "7")) {
-          blk_begin.push(notimeout_list[list_ind].blklist[j]);
-          find = 0;
-        }
-
-      } else if (temp_type_name == "4") {
-        complie_info +="Error:" + notimeout_list[list_ind].blklist[j] + " can not be put on the top of the list!"+"\n";
-        erorr_num++;
-      }
-    }
-
-    for (var i = while_body_begin; i <= while_body_end; i++) {
-      var temp_type_name = Arco.block.ui_type_match(notimeout_list[list_ind].blklist[i]);
-      if (temp_type_name != "2" && temp_type_name != "3" && temp_type_name != "6" && temp_type_name != "7") {
-        complie_info +="Error:" + notimeout_list[list_ind].blklist[i] + " can not be put in the middle of the list!"+"\n";
-        erorr_num++;
-      }
-    }
-
-  }
-  return erorr_num;
-
-}
-function check_until(blkname, list_ind) {
-  var until_name = blkname;
-  var name_split = until_name.split("ID");
-  var list_ind = list_ind;
-  var erorr_num = 0;
-  var find = 0;
-  var until_body_begin = blk_ind_info.untilblk[list_ind].bodybegin[name_split[1]];
-  var until_body_end = blk_ind_info.untilblk[list_ind].bodyend[name_split[1]];
-  var until_con_begin = blk_ind_info.untilblk[list_ind].conbegin[name_split[1]];;
-  var until_con_end = blk_ind_info.untilblk[list_ind].conend[name_split[1]];
-  //until只能在中间和最后
-  if (until_name == abr_list[list_ind].blklist[abr_list[list_ind].blklist.length - 1]) //until在最后
-  {
-    for (var j = until_con_begin; j <= until_con_end; j++) {
-      var temp_type_name = Arco.block.ui_type_match(notimeout_list[list_ind].blklist[j]);
-      if (temp_type_name == "1") {
-        blk_begin.push(notimeout_list[list_ind].blklist[j]);
-      } else if (temp_type_name == "2" || temp_type_name == "6" || temp_type_name == "3" || temp_type_name == "5" || temp_type_name == "7") //and组件里含有源组件的属性的组件类型1,3,5,7，需要查找的是2、6
-      {
-
-        for (var i = 0; i < abr_list.length; i++) {
-          if (i != list_ind) {
-            for (var w = 1; w < abr_list[i].blklist.length; w++) {
-              if (abr_list[i].blklist[w] == notimeout_list[list_ind].blklist[j]) {
-                find = 1;
-              } else if (abr_list[i].blklist[w].indexOf("controls_branch") >= 0) {
-                var branch_name_split = abr_list[i].blklist[w].split("ID");
-                var branch_begin = blk_ind_info.branchblk[i].begin[branch_name_split[1]];
-                var branch_end = blk_ind_info.branchblk[i].end[branch_name_split[1]];
-                for (var t = branch_begin; t <= branch_end; t++) {
-                  if (notimeout_list[i].blklist[t] == notimeout_list[list_ind].blklist[j]) {
-                    find = 1;
-                  }
-                }
-              }
-            }
-          }
-        }
-        if ((find == 0 && temp_type_name == "2") || (find == 0 && temp_type_name == "6")) {
-          complie_info +="Error:" + notimeout_list[list_ind].blklist[j] + " can not be put on the top of the list!"+"\n";
-          erorr_num++;
-        } else if (find == 1) {
-          find = 0;
-        } else if ((find == 0 && temp_type_name == "3") || (find == 0 && temp_type_name == "5") || (find == 0 && temp_type_name == "7")) {
-          blk_begin.push(notimeout_list[list_ind].blklist[j]);
-          find = 0;
-        }
-
-      } else if (temp_type_name == "4") {
-        complie_info +="Error:" + notimeout_list[list_ind].blklist[j] + " can not be put on the top of the list!"+"\n";
-        erorr_num++;
-      }
-    }
-    //检查最后一个是否为终端组件
-    var temp_type_name = Arco.block.ui_type_match(notimeout_list[list_ind].blklist[until_body_end]);
-    if (temp_type_name == "4" ) {
-      blk_end.push(notimeout_list[list_ind].blklist[until_body_end]);
-    }  else if (temp_type_name == "5" || temp_type_name == "6" || temp_type_name == "7") {
-      for (var i = 0; i < abr_list.length - 1; i++) {
-        if (i != list_ind) {
-          for (var w = 1; w < abr_list[i].blklist.length; w++) {
-            if ( notimeout_list[list_ind].blklist[until_body_end]== abr_list[j].blklist[w - 1]) {
-              find = 1;
-            }
-          }
-        }
-      }
-      if (find == 0) {
-        if ( notimeout_list[list_ind].blklist[until_body_end].indexOf("controls_repeat_for") < 0 &&  notimeout_list[list_ind].blklist[until_body_end].indexOf("controls_repeat_while") < 0 &&  notimeout_list[list_ind].blklist[until_body_end].indexOf("controls_repeat_until") < 0 &&  notimeout_list[list_ind].blklist[until_body_end].indexOf("controls_branch") < 0) {
-          blk_end.push( notimeout_list[list_ind].blklist[until_body_end]);
-        }
-      } else if (find == 1) {
-        find = 0;
-      }
-    }else  {
-      complie_info +="Error:" +  notimeout_list[list_ind].blklist[until_body_end]  + " can not be put at the bottom of the list!"+"\n";
-      erorr_num++;
-    }
-
-
-
-    if (temp_type_name != "4" && temp_type_name != "5" && temp_type_name != "6" && temp_type_name != "7") {
-      complie_info +="Error:" + notimeout_list[list_ind].blklist[until_body_end] + " can not be put at the bottom of the list!"+"\n";
-      erorr_num++;
-    }
-
-    for (var i = until_body_begin; i < until_body_end; i++) {
-      var temp_type_name = Arco.block.ui_type_match(notimeout_list[list_ind].blklist[i]);
-      if (temp_type_name != "2" && temp_type_name != "3" && temp_type_name != "6" && temp_type_name != "7") {
-        complie_info +="Error:" + notimeout_list[list_ind].blklist[i] + " can not be put in the middle of the list!"+"\n";
-        erorr_num++;
-      }
-
-    }
-
-  } else //until在中间
-  {
-    for (var j = until_con_begin; j <= until_con_end; j++) {
-      var temp_type_name = Arco.block.ui_type_match(notimeout_list[list_ind].blklist[j]);
-      if (temp_type_name == "1") {
-        blk_begin.push(notimeout_list[list_ind].blklist[j]);
-      } else if (temp_type_name == "2" || temp_type_name == "6" || temp_type_name == "3" || temp_type_name == "5" || temp_type_name == "7") //and组件里含有源组件的属性的组件类型1,3,5,7，需要查找的是2、6
-      {
-
-        for (var i = 0; i < abr_list.length; i++) {
-          if (i != list_ind) {
-            for (var w = 1; w < abr_list[i].blklist.length; w++) {
-              if (abr_list[i].blklist[w] == notimeout_list[list_ind].blklist[j]) {
-                find = 1;
-              } else if (abr_list[i].blklist[w].indexOf("controls_branch") >= 0) {
-                var branch_name_split = abr_list[i].blklist[w].split("ID");
-                var branch_begin = blk_ind_info.branchblk[i].begin[branch_name_split[1]];
-                var branch_end = blk_ind_info.branchblk[i].end[branch_name_split[1]];
-                for (var t = branch_begin; t <= branch_end; t++) {
-                  if (notimeout_list[i].blklist[t] == notimeout_list[list_ind].blklist[j]) {
-                    find = 1;
-                  }
-                }
-              }
-            }
-          }
-        }
-        if ((find == 0 && temp_type_name == "2") || (find == 0 && temp_type_name == "6")) {
-          complie_info +="Error:" + notimeout_list[list_ind].blklist[j] + " can not be put on the top of the list!"+"\n";
-          erorr_num++;
-        } else if (find == 1) {
-          find = 0;
-        } else if ((find == 0 && temp_type_name == "3") || (find == 0 && temp_type_name == "5") || (find == 0 && temp_type_name == "7")) {
-          blk_begin.push(notimeout_list[list_ind].blklist[j]);
-          find = 0;
-        }
-
-      } else if (temp_type_name == "4") {
-        complie_info +="Error:" + notimeout_list[list_ind].blklist[j] + " can not be put on the top of the list!"+"\n";
-        erorr_num++;
-      }
-    }
-
-    for (var i = until_body_begin; i <= until_body_end; i++) {
-      var temp_type_name = Arco.block.ui_type_match(notimeout_list[list_ind].blklist[i]);
-      if (temp_type_name != "2" && temp_type_name != "3" && temp_type_name != "6" && temp_type_name != "7") {
-        complie_info +="Error:" + notimeout_list[list_ind].blklist[i] + " can not be put in the middle of the list!"+"\n";
-        erorr_num++;
-      }
-    }
-
-  }
-  return erorr_num;
-
-}
-
-function check_timeout(blkname, list_ind) {
+Arco.block['check_timeout'] = function(blkname, list_ind) {
   var tm_name = blkname;
   var name_split = tm_name.split("ID");
   var list_ind = list_ind;
@@ -661,10 +363,6 @@ function check_timeout(blkname, list_ind) {
   var c_or_end;
   var c_branch_begin;
   var c_branch_end;
-  var c_while_con_begin;
-  var c_while_con_end;
-  var c_until_con_begin;
-  var c_until_con_end;
   var erorr_num = 0;
   //timeout中只可以接for、delay、timeout和一般组件、branch,不可以接while、until
   for (var i = timeout_begin; i <= timeout_end; i++) {
@@ -737,47 +435,7 @@ function check_timeout(blkname, list_ind) {
         }
       }
       //i在branch_statement处
-    } else if (blk_list[list_ind].blklist[i].indexOf("controls_repeat_while") >= 0) {
-      var name_split = blk_list[list_ind].blklist[i].split("ID");
-      //查找底下为con_statement项
-      i = i + 2;
-      for (var j = i; j < blk_list[list_ind].blklist.length; j++) {
-        if (blk_list[list_ind].blklist[j] == "con_statement" + "ID" + name_split[1]) {
-          j = blk_list[list_ind].blklist.length;
-        } else {
-          i++;
-        }
-        i = i + 2;
-        if (blk_list[list_ind].blklist[j] == "body_statement" + "ID" + name_split[1]) {
-          j = blk_list[list_ind].blklist.length;
-        } else {
-          i++;
-        }
-      }
-      //i在body_statement处
-      complie_info +="Error: controls_repeat_while can not be put in the timeout!"+"\n";
-      erorr_num++;
-    } else if (blk_list[list_ind].blklist[i].indexOf("controls_repeat_until") >= 0) {
-      var name_split = blk_list[list_ind].blklist[i].split("ID");
-      //查找底下为body_statement项
-      i = i + 2;
-      for (var j = i; j < blk_list[list_ind].blklist.length; j++) {
-        if (blk_list[list_ind].blklist[j] == "body_statement" + "ID" + name_split[1]) {
-          j = blk_list[list_ind].blklist.length;
-        } else {
-          i++;
-        }
-        i = i + 2;
-        if (blk_list[list_ind].blklist[j] == "con_statement" + "ID" + name_split[1]) {
-          j = blk_list[list_ind].blklist.length;
-        } else {
-          i++;
-        }
-      }
-      //i在con_statement处
-      complie_info +="Error: controls_repeat_until can not be put in the timeout!"+"\n";
-      erorr_num++;
-    }
+    } 
   }
   //timeout不可以存放在and、or、branch、while的条件中,遍历函数查找各节点
   for (var i = 0; i < blk_list[list_ind].blklist.length; i++) {
@@ -851,58 +509,7 @@ function check_timeout(blkname, list_ind) {
         complie_info +="Error: timeout can not be put in the controls_branch!"+"\n";
         erorr_num++;
       }
-    } else if (blk_list[list_ind].blklist[i].indexOf("controls_repeat_while") >= 0) {
-      var name_split = blk_list[list_ind].blklist[i].split("ID");
-      //查找底下为con_statement项
-      i = i + 2;
-      c_while_con_begin = i;
-      for (var j = i; j < blk_list[list_ind].blklist.length; j++) {
-        if (blk_list[list_ind].blklist[j] == "con_statement" + "ID" + name_split[1]) {
-          j = blk_list[list_ind].blklist.length;
-        } else {
-          i++;
-        }
-      }
-      c_while_con_end = i - 1;
-      i = i + 2;
-      for (var j = i; j < blk_list[list_ind].blklist.length; j++) {
-        if (blk_list[list_ind].blklist[j] == "body_statement" + "ID" + name_split[1]) {
-          j = blk_list[list_ind].blklist.length;
-        } else {
-          i++;
-        }
-      }
-      //i在body_statement处
-      if ((c_while_con_begin < timeout_begin) && (c_while_con_end > timeout_end)) {
-        complie_info +="Error: timeout can not be put in the controls_repeat_while!"+"\n";
-        erorr_num++;
-      }
-    } else if (blk_list[list_ind].blklist[i].indexOf("controls_repeat_until") >= 0) {
-      var name_split = blk_list[list_ind].blklist[i].split("ID");
-      //查找底下为body_statement项
-      i = i + 2;
-      for (var j = i; j < blk_list[list_ind].blklist.length; j++) {
-        if (blk_list[list_ind].blklist[j] == "body_statement" + "ID" + name_split[1]) {
-          j = blk_list[list_ind].blklist.length;
-        } else {
-          i++;
-        }
-        i = i + 2;
-        c_until_con_begin = i;
-        if (blk_list[list_ind].blklist[j] == "con_statement" + "ID" + name_split[1]) {
-          j = blk_list[list_ind].blklist.length;
-        } else {
-          i++;
-        }
-      }
-      //i在con_statement处
-      c_until_con_end = i - 1;
-
-      if ((c_until_con_begin < timeout_begin) && (c_until_con_end > timeout_end)) {
-        complie_info +="Error: timeout can not be put in the controls_repeat_until!"+"\n";
-        erorr_num++;
-      }
-    }
+    } 
 
     return erorr_num;
   }

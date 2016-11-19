@@ -19,12 +19,6 @@ Arco.block['parse_element'] = function (element, list_obj) {
     } else if (b_f_name == "controls_or") {
       b_element = Arco.block.logicComponentsParse(b_f_name, list_obj, b_element, Arco.block.parse_orblk);
 
-    } else if (b_f_name == "controls_repeat_while") {
-      b_element = Arco.block.logicComponentsParse(b_f_name, list_obj, b_element, Arco.block.parse_whileblk);
-
-    } else if (b_f_name == "controls_repeat_until") {
-      b_element = Arco.block.logicComponentsParse(b_f_name, list_obj, b_element, Arco.block.parse_untilblk);
-
     } else if (b_f_name == "text_print_delay") {
       b_element = Arco.block.logicComponentsParse(b_f_name, list_obj, b_element, Arco.block.parse_delayblk);
 
@@ -177,64 +171,6 @@ Arco.block['parse_branchblk'] = function (element,list_obj) {
     b_element = branch_next;
   } else {
     b_element = branch_statement_end;
-  }
-
-  return b_element;
-}
-
-Arco.block['parse_whileblk'] = function (element,list_obj) {
-
-  var b_element = element;
-  list_obj.blkvallist.push("");
-  var con_statement = b_element.childNodes[0]; //对应con标签
-  list_obj.blklist.push("con_statement" + "ID" + id_count["controls_repeat_while"]); //放入statement
-  var l_while_id = id_count["controls_repeat_while"];
-  list_obj.blkvallist.push("");
-  id_count["controls_repeat_while"]++;
-  con_statement = con_statement.childNodes[0]; //获得con中的第一个block
-  Arco.block.parse_element(con_statement,list_obj);
-  list_obj.blklist.push("con_statement" + "ID" + l_while_id); //放入statement
-  list_obj.blkvallist.push("");
-  var body_statement = b_element.childNodes[1]; //对应body标签
-  list_obj.blklist.push("body_statement" + "ID" + l_while_id); //放入statement
-  list_obj.blkvallist.push("");
-  var while_end = Arco.block.parse_element(body_statement,list_obj);
-  list_obj.blklist.push("body_statement" + "ID" + l_while_id); //放入statement
-  list_obj.blkvallist.push("");
-  if (b_element.childNodes.length > 2) {
-    var while_next = b_element.childNodes[2]; //对应next标签
-    b_element = while_next;
-  } else {
-    b_element = while_end;
-  }
-
-  return b_element;
-}
-
-Arco.block['parse_untilblk'] = function (element,list_obj) {
-  var b_element = element;
-  list_obj.blkvallist.push("");
-  var body_statement = b_element.childNodes[0]; //对应body标签
-  list_obj.blklist.push("body_statement" + "ID" + id_count["controls_repeat_until"]); //放入statement
-  list_obj.blkvallist.push("");
-  var l_until_id = id_count["controls_repeat_until"];
-  id_count["controls_repeat_until"];
-  var until_end = Arco.block.parse_element(body_statement,list_obj);
-  list_obj.blklist.push("body_statement" + "ID" + l_until_id); //放入statement
-  list_obj.blkvallist.push("");
-  var con_statement = b_element.childNodes[1]; //对应con标签
-  list_obj.blklist.push("con_statement" + "ID" + l_until_id); //放入statement
-  list_obj.blkvallist.push("");
-  con_statement = con_statement.childNodes[0]; //获得con中的第一个block
-  Arco.block.parse_element(con_statement,list_obj);
-  list_obj.blklist.push("con_statement" + "ID" + l_until_id); //放入statement
-  list_obj.blkvallist.push("");
-
-  if (b_element.childNodes.length > 2) {
-    var until_next = b_element.childNodes[2]; //对应next标签
-    b_element = until_next;
-  } else {
-    b_element = until_end;
   }
 
   return b_element;

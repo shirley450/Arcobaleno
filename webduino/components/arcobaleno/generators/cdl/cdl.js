@@ -26,14 +26,6 @@ Arco.cdl['extract_components_and_connections'] = function(abr_list) {
 
         Arco.cdl.for2cdl(abr_blk_list[i], j);
 
-      } else if (abr_blk_list[i].indexOf("controls_repeat_while") >= 0) {
-
-        Arco.cdl.while2cdl(abr_blk_list[i], j);
-
-      } else if (abr_blk_list[i].indexOf("controls_repeat_until") >= 0) {
-
-        Arco.cdl.until2cdl(abr_blk_list[i], j);
-
       } else {
         //  ordinary devices
         Arco.cdl.device2cdl(abr_blk_list, i);

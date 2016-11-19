@@ -51,14 +51,14 @@
         </value>
         <value name="elements"></value>
       </block>
-      <block type="controls_repeat_while">
+      <!--<block type="controls_repeat_while">
         <value name="elements"></value>
         <value name="elements"></value>
       </block>
       <block type="controls_repeat_until">
         <value name="elements"></value>
         <value name="elements"></value>
-      </block>
+      </block>-->
       <block type="controls_and">
         <value name="elements"></value>
       </block>
