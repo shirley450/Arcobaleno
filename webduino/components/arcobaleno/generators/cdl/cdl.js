@@ -34,24 +34,19 @@ Arco.cdl['extract_components_and_connections'] = function(abr_list) {
     }
   }
 
+Arco.cdl.remove_duplicates();
+  
+}
 
-  //Arco.cdl.remove_duplicates();
+Arco.cdl['remove_duplicates'] = function() {
   //查重 对component进行排查
-  var del_comp = new Array();
+  var dict = new Array();
   for (var i = 0; i < (component_list.length - 1); i++) {
-    for (var j = i + 1; j < component_list.length; j++) {
-      if (component_list[i].name == component_list[j].name) {
-        del_comp.push(j);
-      }
-    }
-  }
-  del_comp.sort();
-  for (var i = 0; i < del_comp.length; i++) {
-    component_list.splice(del_comp[i], 1);
-    if (del_comp.length > 1) {
-      for (var j = i + 1; j < del_comp.length; j++) {
-        del_comp[j]--;
-      }
+    
+    if (dict[component_list[i].name] != 1) {
+      dict[component_list[i].name] = 1;
+    } else {
+      component_list.splice(component_list[i], 1);
     }
   }
 

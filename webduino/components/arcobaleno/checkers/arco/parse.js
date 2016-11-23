@@ -11,31 +11,31 @@ Arco.block['parse_element'] = function (element, list_obj) {
     b_f_name = b_element.getAttribute("type"); //block的名字
     
     if (b_f_name == "controls_repeat_for") {
-      b_element = Arco.block.logicComponentsParse(b_f_name, list_obj, b_element, Arco.block.parse_forblk);
+      b_element = Arco.block.parse_logic_components(b_f_name, list_obj, b_element, Arco.block.parse_forblk);
  
     } else if (b_f_name == "controls_and") {
-      b_element = Arco.block.logicComponentsParse(b_f_name, list_obj, b_element, Arco.block.parse_andblk);
+      b_element = Arco.block.parse_logic_components(b_f_name, list_obj, b_element, Arco.block.parse_andblk);
 
     } else if (b_f_name == "controls_or") {
-      b_element = Arco.block.logicComponentsParse(b_f_name, list_obj, b_element, Arco.block.parse_orblk);
+      b_element = Arco.block.parse_logic_components(b_f_name, list_obj, b_element, Arco.block.parse_orblk);
 
     } else if (b_f_name == "text_print_delay") {
-      b_element = Arco.block.logicComponentsParse(b_f_name, list_obj, b_element, Arco.block.parse_delayblk);
+      b_element = Arco.block.parse_logic_components(b_f_name, list_obj, b_element, Arco.block.parse_delayblk);
 
     } else if (b_f_name == "text_print_timeout") {
-      b_element = Arco.block.logicComponentsParse(b_f_name, list_obj, b_element, Arco.block.parse_timeoutblk);
+      b_element = Arco.block.parse_logic_components(b_f_name, list_obj, b_element, Arco.block.parse_timeoutblk);
 
     } else if (b_f_name == "controls_branch") {
-      b_element = Arco.block.logicComponentsParse(b_f_name, list_obj, b_element, Arco.block.parse_branchblk);
+      b_element = Arco.block.parse_logic_components(b_f_name, list_obj, b_element, Arco.block.parse_branchblk);
 
     } else if(true) {
-         b_element = Arco.block.deviceComponentsParse(b_f_name, list_obj, b_element);
+         b_element = Arco.block.parse_device_components(b_f_name, list_obj, b_element);
     }
     }
     return b_element;
 }
 
-Arco.block['logicComponentsParse'] = function (name,  list_obj, b_element, callback) {
+Arco.block['parse_logic_components'] = function (name,  list_obj, b_element, callback) {
   if(!id_count[name]) id_count[name.toString()] = 0;
   name = name + 'ID' + id_count[name.toString()];
   list_obj.blklist.push(name.toString());
@@ -43,7 +43,7 @@ Arco.block['logicComponentsParse'] = function (name,  list_obj, b_element, callb
   return b_element;
 }
 
-Arco.block['deviceComponentsParse'] = function (b_f_name, list_obj, b_element) {
+Arco.block['parse_device_components'] = function (b_f_name, list_obj, b_element) {
 
   var name = b_element.getElementsByTagName("FIELD")[0].childNodes[0].nodeValue;
   if(!id_count[b_f_name]) id_count[b_f_name.toString()] = 0;
@@ -82,7 +82,8 @@ Arco.block['deviceComponentsParse'] = function (b_f_name, list_obj, b_element) {
   }
       return b_element;
 }
- Arco.block['parse_forblk'] = function (element, list_obj) {
+
+Arco.block['parse_forblk'] = function (element, list_obj) {
   var b_element = element;
   //value部分
   var for_value = b_element.childNodes[0]; //对应value标签
@@ -132,7 +133,7 @@ Arco.block['parse_andblk'] = function (element,list_obj) {
   return b_element;
 }
 
-Arco.block['parse_orblk'] = function (element,list_obj) {
+Arco.block['parse_orblk'] = function (element, list_obj ) {
 
   var b_element = element;
   list_obj.blkvallist.push("");
