@@ -9,6 +9,8 @@ Arco.block['parse_element'] = function (element, list_obj) {
       b_element = b_element.childNodes[0];
     } 
     b_f_name = b_element.getAttribute("type"); //block的名字
+    //console.log("b_f_name",b_f_name);
+
     
     if (b_f_name == "controls_repeat_for") {
       b_element = Arco.block.parse_logic_components(b_f_name, list_obj, b_element, Arco.block.parse_forblk);
@@ -20,7 +22,7 @@ Arco.block['parse_element'] = function (element, list_obj) {
       b_element = Arco.block.parse_logic_components(b_f_name, list_obj, b_element, Arco.block.parse_orblk);
 
     } else if (b_f_name == "text_print_delay") {
-      b_element = Arco.block.parse_logic_components(b_f_name, list_obj, b_element, Arco.block.parse_delayblk);
+      b_element = Arco.block.parse_timeoutblk(b_element, list_obj)
 
     } else if (b_f_name == "text_print_timeout") {
       b_element = Arco.block.parse_logic_components(b_f_name, list_obj, b_element, Arco.block.parse_timeoutblk);
@@ -36,43 +38,49 @@ Arco.block['parse_element'] = function (element, list_obj) {
 }
 
 Arco.block['parse_logic_components'] = function (name,  list_obj, b_element, callback) {
-  if(!id_count[name]) id_count[name.toString()] = 0;
-  name = name + 'ID' + id_count[name.toString()];
-  list_obj.blklist.push(name.toString());
+  if(!id_count[name])id_count[name] = 0;
+  var temp = name + 'ID' + id_count[name];
+  //id_count[name]++;
+  list_obj.blklist.push(temp);
   b_element = callback(b_element, list_obj);
   return b_element;
 }
 
 Arco.block['parse_device_components'] = function (b_f_name, list_obj, b_element) {
 
-  var name = b_element.getElementsByTagName("FIELD")[0].childNodes[0].nodeValue;
-  if(!id_count[b_f_name]) id_count[b_f_name.toString()] = 0;
-  if(!id_info[b_f_name]) id_info[b_f_name.toString()] = new Array();
 
-  var temp = b_f_name;
+  var name = b_element.getElementsByTagName("FIELD")[0].childNodes[0].nodeValue;
+  //console.log("b_f_name:", b_f_name,"  name: ", name);
+  if(!id_count[b_f_name]) id_count[b_f_name] = 0;
+  if(!id_info[b_f_name]) id_info[b_f_name] = new Array();
+
+  //var temp = b_f_name;
   if(name != Arco.block.dev_type_match(b_f_name)) //如果界面输入的不是默认组件名字
   {
     if(name in id_info[b_f_name])
     {
       var id_inner = id_info[b_f_name][name.toString()];
-      b_f_name = b_f_name + "ID" + id_inner;
-      list_obj.blklist.push(b_f_name);
-        list_obj.blkvallist.push("");
-      } else {
+      var temp = b_f_name + "ID" + id_inner;
+      list_obj.blklist.push(temp);
+      list_obj.blkvallist.push("");
+      //id_count[b_f_name]++;
+    } else {
         if(!id_count[b_f_name]) id_count[b_f_name] = 0;
         id_info[b_f_name][name.toString()] = id_count[b_f_name];
-        b_f_name = b_f_name + "ID" + id_count[b_f_name];
-        list_obj.blklist.push(b_f_name); //往list_obj.blklist中放入block
+        var temp = b_f_name + "ID" + id_count[b_f_name];
+        id_count[b_f_name]++;
+        list_obj.blklist.push(temp); //往list_obj.blklist中放入block
       }
     }
   else 
   {
-    b_f_name = b_f_name + "ID" + id_count[b_f_name.toString()];
-    list_obj.blklist.push(b_f_name); //往list_obj.blklist中放入block
+    var temp = b_f_name + "ID" + id_count[b_f_name];
+    id_count[b_f_name]++;
+    list_obj.blklist.push(temp); //往list_obj.blklist中放入block
     list_obj.blkvallist.push("");
   }
 
-  id_count[temp]++;
+ 
 
   if (b_element.childNodes.length > 1) //取next
   {
@@ -203,6 +211,7 @@ Arco.block['parse_timeoutblk'] = function (element,list_obj) {
   }
 
   return b_element;
+
 }
 
 

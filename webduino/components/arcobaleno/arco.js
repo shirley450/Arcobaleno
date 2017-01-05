@@ -99,6 +99,7 @@ Arco.block['arco_run'] = function() {
 Arco.block['ui_read'] = function(blk_list) {
 
 	var xmldoc = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+	//console.log("blockly xml:",xmldoc.toString());
 	for (var i = 0; i < xmldoc.childNodes.length; i++) {
 		var list_obj = new Object();
 		list_obj.blklist = new Array();
@@ -209,14 +210,14 @@ Arco.block.add_component_type("led","4");
 Arco.block.add_component_type("switch", "3");
 Arco.block.add_component_type("relay","2");
 Arco.block.add_component_type("pir","1");
-Arco.block.add_component_type("passthrough","6");
+Arco.block.add_component_type("passthrough","2");
 Arco.block.add_component_type("button","1");
 Arco.block.add_component_type("controls_and","1");
 Arco.block.add_component_type("controls_or","1");
 Arco.block.add_component_type("controls_repeat_for","6");
 Arco.block.add_component_type("text_print_timeout", "7");
-Arco.block.add_component_type( "text_print_delay","2");
-Arco.block.add_component_type( "controls_branch","6");
+Arco.block.add_component_type("text_print_delay","2");
+Arco.block.add_component_type("controls_branch","6");
 
 Arco.block.add_device_type("led", "LED");
 Arco.block.add_device_type("switch", "SWITCH");
@@ -236,3 +237,6 @@ Arco.block.add_device_type("ForCntBack", "Positive");
 Arco.block.add_device_type("text_print_delay", "VDev");
 Arco.block.add_device_type("AndFinish", "VDev");
 Arco.block.add_device_type("OrFinish",  "VDev");
+Arco.block.add_device_type("controls_branch",  "VDev");
+Arco.block.add_device_type("passthrough",  "PASSTHROUGH");
+

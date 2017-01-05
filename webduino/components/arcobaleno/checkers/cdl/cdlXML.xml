@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <cdl name="" version="">
+    <list name="component">
+      <component name="text_deviceA" type="start">
+        <type>Switch</type>
+        <behavior>
+          <name/>
+          <value/>
+        </behavior>
+      </component>
+      <component name="text_print_delayID0">
+        <type>VDev</type>
+        <behavior>
+          <name>delay</name>
+          <value>10</value>
+        </behavior>
+      </component>
+      <component name="text_deviceE">
+        <type>LED_4</type>
+        <behavior>
+          <name/>
+          <value/>
+        </behavior>
+      </component>
+      <component name="text_deviceJ">
+        <type>LED_8</type>
+        <behavior>
+          <name/>
+          <value/>
+        </behavior>
+      </component>
+      <component name="ForTriggerID0">
+        <type>ForTrigger</type>
+        <behavior>
+          <name/>
+          <value/>
+        </behavior>
+      </component>
+      <component name="ForInitID0">
+        <type>VDev</type>
+        <behavior>
+          <name>counter</name>
+          <value>40</value>
+        </behavior>
+      </component>
+      <component name="ForInputID0">
+        <type>ForInput</type>
+        <behavior>
+          <name/>
+          <value/>
+        </behavior>
+      </component>
+      <component name="ForCmpID0">
+        <type>ForCmp</type>
+        <behavior>
+          <name/>
+          <value/>
+        </behavior>
+      </component>
+      <component name="ForCntID0">
+        <type>ForCnt</type>
+        <behavior>
+          <name/>
+          <value/>
+        </behavior>
+      </component>
+      <component name="ForBackID0">
+        <type>ForBack</type>
+        <behavior>
+          <name/>
+          <value/>
+        </behavior>
+      </component>
+      <component name="ForEndID0" type="end">
+        <type>ForEnd</type>
+        <behavior>
+          <name/>
+          <value/>
+        </behavior>
+      </component>
+    </list>
+    <list name="connection">
+     <connection name="con_0">
+	   <from name="text_deviceA"/>
+        <to name="text_print_delayID0"/>
+      </connection>
+      <connection name="con_1">
+        <from name="text_print_delayID0"/>
+        <to name="text_deviceE"/>
+      </connection>
+      <connection name="con_2">
+        <from name="ForTriggerID0"/>
+        <to name="ForInitID0"/>
+      </connection>
+      <connection name="con_3">
+        <from name="ForCmpID0"/>
+        <to name="ForInitID0"/>
+      </connection>
+      <connection name="con_4">
+        <from name="ForInitID0"/>
+        <from name="text_deviceE"/>
+        <to name="ForInputID0"/>
+      </connection>
+      <connection name="con_5">
+        <from name="ForInputID0"/>
+        <to name="text_deviceJ"/>
+      </connection>
+      <connection name="con_6">
+        <from name="ForInitID0"/>
+        <to name="ForCntID0"/>
+      </connection>
+      <connection name="con_7">
+        <from name="ForCntID0"/>
+        <to name="ForCntID0"/>
+      </connection>
+      <connection name="con_8">
+        <from name="ForCntID0"/>
+        <to name="ForCmpID0"/>
+      </connection>
+      <connection name="con_9">
+        <from name="ForCntID0"/>
+        <from name="text_deviceJ"/>
+        <to name="ForBackID0"/>
+      </connection>
+      <connection name="con_10">
+        <from name="ForCntID0"/>
+        <from name="text_deviceJ"/>
+        <to name="ForEndID0"/>
+      </connection>
+      <connection name="con_11">
+        <from name="ForBackID0"/>
+        <to name="text_deviceJ"/>
+      </connection>
+    </list>
+    <list name="rule" >
+      <rule name="repeatID0" type="loop">
+        <from name="text_deviceJ"/>
+        <to name="text_deviceJ"/>
+        <value>40</value>
+      </rule>
+      <rule name="timeoutID0" type="timeout">
+        <start from="text_print_delayID0"/>
+        <end to="text_deviceE"/>
+        <value>15</value>
+      </rule>
+      <rule name="timeoutID1" type="timeout">
+        <start after="text_deviceE"/>
+        <end to="ForEndID0"/>
+        <value>15</value>
+      </rule>
+    </list>
+  </cdl>
+

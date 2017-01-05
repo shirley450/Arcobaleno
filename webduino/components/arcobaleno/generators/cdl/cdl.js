@@ -28,7 +28,7 @@ Arco.cdl['extract_components_and_connections'] = function(abr_list) {
 
       } else {
         //  ordinary devices
-        Arco.cdl.device2cdl(abr_blk_list, i);
+        Arco.cdl.device2cdl(abr_blk_list, i, j);
 
       }
     }
@@ -156,13 +156,13 @@ Arco.cdl['extract_rules'] = function(abr_list){
     for (var j = 0; j < blk_list[i].blklist.length; j++) {
       if (blk_list[i].blklist[j].indexOf("text_print_timeout") >= 0) {
         var name_split = blk_list[i].blklist[j].split("ID");
+        console.log("test timout2cdl start");
         Arco.cdl.timeout2cdl(blk_ind_info.timeoutblk[i].begin[name_split[1]], blk_ind_info.timeoutblk[i].end[name_split[1]], blk_ind_info.timeoutblk[i].ind, name_split[1]);
+        console.log("test timeout2cdl end");      
       }
     }
   }
 }
-
-
 
 Arco.cdl['extract'] = function(abr_list) {
   //第一遍生成component、connection、rulelist
@@ -249,12 +249,12 @@ Arco.cdl['generate_components'] = function(component_list_element){
     var textnode = document.createTextNode(Arco.block.cmp_type_match(component_list[i].name));
     begin_end_type.appendChild(textnode);
 
-    if (component_list[i].name.indexOf("OrFinish") >= 0 || component_list[i].name.indexOf("AndFinish") >= 0) {
+    /*if (component_list[i].name.indexOf("OrFinish") >= 0 || component_list[i].name.indexOf("AndFinish") >= 0) {
       var next_element = document.createElement("next");
       next_element = component_element.appendChild(next_element);
       var textnode = document.createTextNode(component_list[i].next);
       next_element.appendChild(textnode);
-    }
+    }*/
   }
 
 return component_list_element;

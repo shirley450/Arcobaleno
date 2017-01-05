@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cdl name="aaa" version="0.0.1">
+    <list name="component">
+      <component name="pirID0">
+        <type>PIR</type>
+        <behavior>
+          <name/>
+          <value/>
+        </behavior>
+        <begin_end_type>sc</begin_end_type>
+      </component>
+      <component name="textgenID0">
+        <type>TextGen</type>
+        <behavior>
+          <name/>
+          <value/>
+        </behavior>
+        <begin_end_type>sc</begin_end_type>
+      </component>
+      <component name="AndFinishID0">
+        <type>VDev</type>
+        <behavior>
+          <name/>
+          <value/>
+        </behavior>
+        <begin_end_type/>
+        <next>controls_repeat_forID0</next>
+      </component>
+      <component name="relayID0">
+        <type>RELAY</type>
+        <behavior>
+          <name/>
+          <value/>
+        </behavior>
+        <begin_end_type/>
+      </component>
+      <component name="ForTriggerID0">
+        <type>Trigger</type>
+        <behavior>
+          <name/>
+          <value/>
+        </behavior>
+        <begin_end_type>sc</begin_end_type>
+      </component>
+      <component name="ForInitID0">
+        <type>VDev</type>
+        <behavior>
+          <name>counter</name>
+          <value>3</value>
+        </behavior>
+        <begin_end_type/>
+      </component>
+      <component name="ForInputID0">
+        <type>InputFilter</type>
+        <behavior>
+          <name/>
+          <value/>
+        </behavior>
+        <begin_end_type/>
+      </component>
+      <component name="ForCmpID0">
+        <type>Zero</type>
+        <behavior>
+          <name/>
+          <value/>
+        </behavior>
+        <begin_end_type/>
+      </component>
+      <component name="ForCntID0">
+        <type>Countdown</type>
+        <behavior>
+          <name/>
+          <value/>
+        </behavior>
+        <begin_end_type/>
+      </component>
+      <component name="ForCntBackID0">
+        <type>ParamFilter</type>
+        <behavior>
+          <name/>
+          <value/>
+        </behavior>
+        <begin_end_type/>
+      </component>
+      <component name="ForBackID0">
+        <type>Positive</type>
+        <behavior>
+          <name/>
+          <value/>
+        </behavior>
+        <begin_end_type/>
+      </component>
+      <component name="ForEndID0">
+        <type>Zero</type>
+        <behavior>
+          <name/>
+          <value/>
+        </behavior>
+        <begin_end_type/>
+      </component>
+      <component name="text_print_delayID0">
+        <type>VDev</type>
+        <behavior>
+          <name>time</name>
+          <value>10</value>
+        </behavior>
+        <begin_end_type/>
+      </component>
+      <component name="DelayID0">
+        <type>Delay</type>
+        <behavior>
+          <name/>
+          <value/>
+        </behavior>
+        <begin_end_type/>
+      </component>
+      <component name="ledID0">
+        <type>LED</type>
+        <behavior>
+          <name/>
+          <value/>
+        </behavior>
+        <begin_end_type>tc</begin_end_type>
+      </component>
+    </list>
+    <list name="connection">
+      <connection name="con_0">
+        <from name="pirID0"/>
+        <from name="textgenID0"/>
+        <to name="AndFinishID0"/>
+      </connection>
+      <connection name="con_1">
+        <from name="ForTriggerID0"/>
+        <to name="ForInitID0"/>
+      </connection>
+      <connection name="con_2">
+        <from name="ForEndID0"/>
+        <to name="ForInitID0"/>
+      </connection>
+      <connection name="con_3">
+        <from name="ForInitID0"/>
+        <from name="AndFinishID0"/>
+        <to name="ForInputID0"/>
+      </connection>
+      <connection name="con_4">
+        <from name="ForInputID0"/>
+        <to name="relayID0"/>
+      </connection>
+      <connection name="con_5">
+        <from name="ForInitID0"/>
+        <to name="ForCntID0"/>
+      </connection>
+      <connection name="con_6">
+        <from name="ForCntID0"/>
+        <from name="relayID0"/>
+        <to name="ForCntBackID0"/>
+      </connection>
+      <connection name="con_7">
+        <from name="ForCntBackID0"/>
+        <to name="ForCntID0"/>
+      </connection>
+      <connection name="con_8">
+        <from name="ForCntID0"/>
+        <from name="relayID0"/>
+        <to name="ForBackID0"/>
+      </connection>
+      <connection name="con_9">
+        <from name="ForCntID0"/>
+        <from name="relayID0"/>
+        <to name="ForEndID0"/>
+      </connection>
+      <connection name="con_10">
+        <from name="ForBackID0"/>
+        <to name="relayID0"/>
+      </connection>
+      <connection name="con_11">
+        <from name="ForEndID0"/>
+        <to name="text_print_delayID0"/>
+      </connection>
+      <connection name="con_12">
+        <from name="text_print_delayID0"/>
+        <to name="DelayID0"/>
+      </connection>
+      <connection name="con_13">
+        <from name="DelayID0"/>
+        <to name="ledID0"/>
+      </connection>
+    </list>
+    <list name="rule">
+      <rule name="repeatID0">
+        <from name="relayID0"/>
+        <to name="relayID0"/>
+        <value>3</value>
+      </rule>
+    </list>
+  </cdl>

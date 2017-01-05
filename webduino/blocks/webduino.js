@@ -152,6 +152,31 @@ Blockly.Blocks['textgen'] = {
 });
   }
 };
+
+
+Blockly.Blocks['passthrough'] = {
+  /**
+   * Block for device.
+   * @this Blockly.Block
+   */
+  init: function() {
+    this.jsonInit({
+  "type": "device",
+  "message0": "Device %1",
+  "args0": [
+    {
+      "type": "field_input",
+      "name": "TYPE",
+      "text": "passthrough"
+    }
+  ],
+      "previousStatement": null,
+      "nextStatement": null,
+  "colour": Blockly.Blocks.texts.HUE,
+});
+  }
+};
+
 Blockly.Blocks['probe'] = {
   /**
    * Block for device.

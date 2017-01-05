@@ -27,6 +27,7 @@
       <block type="pir"></block>
       <block type="probe"></block>
       <block type="textgen"></block>
+       <block type="passthrough"></block>
       <block type="text_print_delay">
         <value name="TIMES">
           <shadow type="math_number">

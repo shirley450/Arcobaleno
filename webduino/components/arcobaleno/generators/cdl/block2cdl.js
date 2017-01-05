@@ -274,8 +274,8 @@ Arco.cdl['for2cdl'] = function (blkname, list_ind) {
       component_obj.name = "Delay" + "ID" + notimeout_list[list_ind].blklist[i].split("ID")[1];
       component_obj.type = "Delay";
       component_obj.behavior = new Object();
-      component_obj.behavior.name = "";
-      component_obj.behavior.value = "";
+      component_obj.behavior.name = "time";
+      component_obj.behavior.value = notimeout_list[list_ind].blkvallist[i];
       component_list.push(component_obj);
     } else {
       var component_obj = new Object();
@@ -441,13 +441,15 @@ Arco.cdl['for2cdl'] = function (blkname, list_ind) {
 
 }
 
-Arco.cdl['timeout2cdl'] = function (timeout_begin, timeout_end, list_ind, id) {
-  var timeout_begin = timeout_begin;
-  var timeout_end = timeout_end;
-  var list_ind = list_ind;
+Arco.cdl['timeout2cdl'] = function (begin, end, ind, id) {
+  var timeout_begin = begin;
+  var timeout_end = end;
+  var list_ind = ind;
   var id = id;
   //生成rule
   var rule_obj = new Object();
+
+  console.log(timeout_begin, timeout_end, list_ind);
   rule_obj.name = "timeout" + "ID" + id;
   rule_obj.from = new Object();
   rule_obj.to = new Object();
@@ -499,7 +501,7 @@ Arco.cdl['timeout2cdl'] = function (timeout_begin, timeout_end, list_ind, id) {
   }
 
   //如果最后项是sc\mc\tc\delay\timeout，则end to
-  var temp_type_name = ui_type_match(blk_list[list_ind].blklist[timeout_end]);
+  var temp_type_name = Arco.block.ui_type_match(blk_list[list_ind].blklist[timeout_end]);
   if (temp_type_name == "1" || temp_type_name == "2" || temp_type_name == "3" || temp_type_name == "4" || temp_type_name == "5" || temp_type_name == "6" || temp_type_name == "7") {
     rule_obj.to.end = "To";
     rule_obj.to.name = blk_list[list_ind].blklist[timeout_end];
@@ -544,8 +546,8 @@ Arco.cdl['delay2cdl'] = function (abr_blk_list, abr_val_list, i) {
         component_obj.name = "Delay" + "ID" + abr_blk_list[i].split("ID")[1];
         component_obj.type = "Delay";
         component_obj.behavior = new Object();
-        component_obj.behavior.name = "";
-        component_obj.behavior.value = "";
+        component_obj.behavior.name = "time";
+        component_obj.behavior.value = abr_val_list[i];
         component_list.push(component_obj);
 
         //生成connection，需判断之前组件类型
@@ -579,7 +581,7 @@ Arco.cdl['delay2cdl'] = function (abr_blk_list, abr_val_list, i) {
 
 }
 
-Arco.cdl['device2cdl'] = function(abr_blk_list, i) {
+Arco.cdl['device2cdl'] = function(abr_blk_list, i, j) {
 
         var component_obj = new Object();
         var temp_type_name = Arco.block.dev_type_match(abr_blk_list[i]);
@@ -591,9 +593,10 @@ Arco.cdl['device2cdl'] = function(abr_blk_list, i) {
         component_obj.behavior.value = "";
         component_list.push(component_obj);
 
-        var name_split = abr_blk_list[i - 1].split("ID"); //以ID进行划分
+        
         if (i < abr_blk_list.length - 1 && i > 0) //不是最后一个和第一个
         {
+          var name_split = abr_blk_list[i - 1].split("ID"); //以ID进行划分
           var connection_obj = new Object();
           connection_obj.from = new Array();
           connection_obj.to = new Array();
@@ -643,6 +646,7 @@ Arco.cdl['device2cdl'] = function(abr_blk_list, i) {
           connection_obj.to = new Array();
           connection_obj.to.push(abr_blk_list[i]);
           //判断前一个的类型
+          var name_split = abr_blk_list[i - 1].split("ID"); //以ID进行划分
           if (abr_blk_list[i - 1].indexOf("controls_and") >= 0) {
             //var name_split = abr_blk_list[i - 1].split("ID"); //以ID进行划分
             connection_obj.from.push("AndFinish" + "ID" + name_split[1]); //存入1个from
@@ -659,6 +663,8 @@ Arco.cdl['device2cdl'] = function(abr_blk_list, i) {
               connection_obj.from.push("OrFinish" + "ID" + branch_andor[1]); //存入1个from
             } else if (branch_andor.indexOf("controls_or") >= 0) {
               connection_obj.from.push("AndFinish" + "ID" + branch_andor[1]); //存入1个from
+            } else {
+              //connection_obj.from.push()
             }
 
           } else if (abr_blk_list[i - 1].indexOf("controls_repeat_for") >= 0) {

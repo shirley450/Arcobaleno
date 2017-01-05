@@ -1,6 +1,6 @@
 function blk_list_check(blk_list, notimeout_list, blk_ind_info, abr_list) {
 
-  //消除timeout项，改写为no_TO_List
+  //消除timeout项，改写为notimeout_list
   for (var i = 0; i < blk_list.length; i++) {
     var notimeout_obj = new Object();
     notimeout_obj.blklist = new Array();
@@ -19,7 +19,9 @@ function blk_list_check(blk_list, notimeout_list, blk_ind_info, abr_list) {
   //重写timeout对象的结构，timeout为object，三个元素，一个list的编号，一个begin，一个end
   var timeout_list = new Array();
   var for_list = new Array();
+  var while_list = new Array();
   var branch_list = new Array();
+  var until_list = new Array();
   var and_list = new Array();
   var or_list = new Array();
 
@@ -38,11 +40,13 @@ function blk_list_check(blk_list, notimeout_list, blk_ind_info, abr_list) {
       } else if (blk_list[i].blklist[j].indexOf("timeout_statement") >= 0) {
         var name_split = blk_list[i].blklist[j].split("ID");
         timeout_obj.end[name_split[1]] = j - 1;
+        console.log("in timeout timeout_statement");
       }
     }
     timeout_list.push(timeout_obj);
 
   }
+  console.log("timeout_list.end ",timeout_list.end);
 
   for (var i = 0; i < notimeout_list.length; i++) //遍历拿到的notimeout_list列表
   {
@@ -51,6 +55,20 @@ function blk_list_check(blk_list, notimeout_list, blk_ind_info, abr_list) {
     for_obj.ind = i;
     for_obj.begin = new Array();
     for_obj.end = new Array();
+
+    var while_obj = new Object();
+    while_obj.ind = i;
+    while_obj.conbegin = new Array();
+    while_obj.conend = new Array();
+    while_obj.bodybegin = new Array();
+    while_obj.bodyend = new Array();
+
+    var until_obj = new Object();
+    until_obj.ind = i;
+    until_obj.conbegin = new Array();
+    until_obj.conend = new Array();
+    until_obj.bodybegin = new Array();
+    until_obj.bodyend = new Array();
 
     var and_obj = new Object();
     and_obj.ind = i;
@@ -108,17 +126,132 @@ function blk_list_check(blk_list, notimeout_list, blk_ind_info, abr_list) {
         var name_split = notimeout_list[i].blklist[j].split("ID"); //以ID进行划分
         branch_obj.end[name_split[1]] = j - 1;
 
-      } 
+      } else if (notimeout_list[i].blklist[j].indexOf("controls_repeat_while") >= 0) {
+
+        var name_split = notimeout_list[i].blklist[j].split("ID"); //以ID进行划分
+        while_obj.conbegin[name_split[1]] = j + 4;
+        
+        j = j + 2; //光标移到条件判断的节点
+        if (notimeout_list[i].blklist[j].indexOf("controls_and") >= 0) {
+          var inname_split = notimeout_list[i].blklist[j].split("ID"); //以ID进行划分
+          j = j + 2; //光标下移到and_statement下面的第一个组件        
+          for (var w = j; w < notimeout_list[i].blklist.length; w++) {
+            if (notimeout_list[i].blklist[w] == "and_statement" + "ID" + inname_split[1]) {
+              w = notimeout_list[i].blklist.length;
+            } else {
+
+              j++;
+            }
+
+          }
+          //光标此时在and_statement处
+          while_obj.conend[name_split[1]] = j - 1;
+          j = j + 3; //光标移到body_statement下一个组件
+          while_obj.bodybegin[name_split[1]] = j;
+          for (var w = j; w < notimeout_list[i].blklist.length; w++) {
+            if (notimeout_list[i].blklist[w] == "body_statement" + "ID" + name_split[1]) {
+              w = notimeout_list[i].blklist.length;
+            } else {
+
+              j++;
+            }
+
+          }
+          while_obj.bodyend[name_split[1]] = j - 1;
+
+        } else if (notimeout_list[i].blklist[j].indexOf("controls_or") >= 0) {
+          var inname_split = notimeout_list[i].blklist[j].split("ID"); //以ID进行划分
+          j = j + 2; //光标下移到or_statement下面的第一个组件
+          for (var w = j; w < notimeout_list[i].blklist.length; w++) {
+            if (notimeout_list[i].blklist[w] == "or_statement" + "ID" + inname_split[1]) {
+              w = notimeout_list[i].blklist.length;
+            } else {
+
+              j++;
+            }
+          }
+          while_obj.conend[name_split[1]] = j - 1;
+          j = j + 3; //光标移到body_statement下一个组件
+          while_obj.bodybegin[name_split[1]] = j;
+          for (var w = j; w < notimeout_list[i].blklist.length; w++) {
+            if (notimeout_list[i].blklist[w] == "body_statement" + "ID" + name_split[1]) {
+              w = notimeout_list[i].blklist.length;
+            } else {
+
+              j++;
+            }
+
+          }
+          while_obj.bodyend[name_split[1]] = j - 1;
+
+        }
+
+      } else if (notimeout_list[i].blklist[j].indexOf("controls_repeat_until") >= 0) {
+        var name_split = notimeout_list[i].blklist[j].split("ID"); //以ID进行划分
+        until_obj.bodybegin[name_split[1]] = j + 2;
+        j = j + 2; //光标移到条件判断的节点
+        for (var w = j; w < notimeout_list[i].blklist.length; w++) {
+          if (notimeout_list[i].blklist[w] == "body_statement" + "ID" + name_split[1]) {
+            w = notimeout_list[i].blklist.length;
+          } else {
+
+            j++;
+          }
+
+        }
+        until_obj.bodyend[name_split[1]] = j - 1;
+        j = j + 2;
+
+        if (notimeout_list[i].blklist[j].indexOf("controls_and") >= 0) {
+          var inname_split = notimeout_list[i].blklist[j].split("ID"); //以ID进行划分
+          j = j + 2; //光标下移到and_statement下面的第一个组件
+          until_obj.conbegin[name_split[1]] = j;
+
+          for (var w = j; w < notimeout_list[i].blklist.length; w++) {
+            if (notimeout_list[i].blklist[w] == "and_statement" + "ID" + inname_split[1]) {
+              w = notimeout_list[i].blklist.length;
+            } else {
+
+              j++;
+            }
+
+          }
+          //光标此时在and_statement处
+          until_obj.conend[name_split[1]] = j - 1;
+
+        } else if (notimeout_list[i].blklist[j].indexOf("controls_or") >= 0) {
+          var inname_split = notimeout_list[i].blklist[j].split("ID"); //以ID进行划分
+          j = j + 2; //光标下移到or_statement下面的第一个组件
+          until_obj.conbegin[name_split[1]] = i;
+          for (var w = j; w < notimeout_list[i].blklist.length; w++) {
+            if (notimeout_list[i].blklist[w] == "or_statement" + "ID" + inname_split[1]) {
+              w = notimeout_list[i].blklist.length;
+            } else {
+
+              j++;
+            }
+          }
+          until_obj.conend[name_split[1]] = j - 1;
+
+        }
+        j++;
+
+      }
+
     }
     for_list.push(for_obj);
     and_list.push(and_obj);
     or_list.push(or_obj);
+    while_list.push(while_obj);
+    until_list.push(until_obj);
     branch_list.push(branch_obj);
   }
 
   blk_ind_info.forblk = for_list;
   blk_ind_info.andblk = and_list;
   blk_ind_info.orblk = or_list;
+  blk_ind_info.whileblk = while_list;
+  blk_ind_info.untilblk = until_list;
   blk_ind_info.branchblk = branch_list;
   blk_ind_info.timeoutblk = timeout_list;
 
@@ -187,6 +320,58 @@ function blk_list_check(blk_list, notimeout_list, blk_ind_info, abr_list) {
           }
 
         }
+      } else if (notimeout_list[i].blklist[j].indexOf("controls_repeat_while") >= 0) {
+        var name_split = notimeout_list[i].blklist[j].split("ID"); //以ID进行划分
+        abr_obj.blklist.push(notimeout_list[i].blklist[j]);
+        abr_obj.blkvallist.push(notimeout_list[i].blkvallist[j]);
+        j = j + 4; //光标下移到and_statement下面的第一个组件
+        for (var w = j; w < notimeout_list[i].blklist.length; w++) {
+          if (notimeout_list[i].blklist[w].indexOf("and_statement") >= 0 || notimeout_list[i].blklist[w].indexOf("or_statement") >= 0) {
+            w = notimeout_list[i].blklist.length;
+          } else {
+
+            j++;
+          }
+
+        }
+        //光标此时在and_statement处
+        j = j + 3; //光标移到body_statement下一个组件
+        for (var w = j; w < notimeout_list[i].blklist.length; w++) {
+          if (notimeout_list[i].blklist[w] == "body_statement" + "ID" + name_split[1]) {
+            w = notimeout_list[i].blklist.length;
+          } else {
+
+            j++;
+          }
+
+        }
+
+      } else if (notimeout_list[i].blklist[j].indexOf("controls_repeat_until") >= 0) {
+        var name_split = notimeout_list[i].blklist[j].split("ID"); //以ID进行划分
+        abr_obj.blklist.push(notimeout_list[i].blklist[j]);
+        abr_obj.blkvallist.push(notimeout_list[i].blkvallist[j]);
+        j = j + 2;
+        for (var w = j; w < notimeout_list[i].blklist.length; w++) {
+          if (notimeout_list[i].blklist[w] == "body_statement" + "ID" + name_split[1]) {
+            w = notimeout_list[i].blklist.length;
+          } else {
+
+            j++;
+          }
+
+        }
+        j = j + 4;
+        for (var w = j; w < notimeout_list[i].blklist.length; w++) {
+          if (notimeout_list[i].blklist[w].indexOf("and_statement") >= 0 || notimeout_list[i].blklist[w].indexOf("or_statement") >= 0) {
+            w = notimeout_list[i].blklist.length;
+          } else {
+
+            j++;
+          }
+
+        }
+        j++;
+
       } else {
         abr_obj.blklist.push(notimeout_list[i].blklist[j]);
         abr_obj.blkvallist.push(notimeout_list[i].blkvallist[j]);
@@ -197,26 +382,26 @@ function blk_list_check(blk_list, notimeout_list, blk_ind_info, abr_list) {
   }
 
   //第一次普查
-  for(var i = 0; i < abr_list.length; i++)
+  for(var i=0;i<abr_list.length;i++)
   {
-    alert("abr_list:" + abr_list[i].blklist);
+    alert("abr_list:"+abr_list[i].blklist);
   }
-  var g_result = Arco.block.general_blk_check(abr_list);
-  var erorr_num = 0;
-  if(g_result == 0){//没有错误
-     erorr_num = Arco.block.blk_check(abr_list);
+  var g_result=general_blk_check(abr_list);
+  var erorr_num=0;
+  if(g_result==0){//没有错误
+     erorr_num=blk_check(abr_list);
   }else{
-    erorr_num = g_result;
+    erorr_num=g_result;
   }
-  var tm_result = 0;
-  for(var i = 0; i < blk_list.length; i++) {
-    for(var j = 0; j < blk_list[i].blklist.length; j++){
-      if (blk_list[i].blklist[j].indexOf("text_print_timeout") >= 0){
-        tm_result = tm_result + Arco.block.check_timeout(blk_list[i].blklist[j], i);
+  var tm_result=0;
+  for(var i=0;i<blk_list.length;i++) {
+    for(var j=0;j<blk_list[i].blklist.length;j++){
+      if (blk_list[i].blklist[j].indexOf("text_print_timeout")>=0){
+        tm_result=tm_result+check_timeout(blk_list[i].blklist[j], i);
       }
     }    
   }
   
-  erorr_num = erorr_num + tm_result;
+  erorr_num=erorr_num+tm_result;
   return erorr_num;
 }
