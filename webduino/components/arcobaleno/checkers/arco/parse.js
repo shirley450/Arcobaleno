@@ -22,7 +22,7 @@ Arco.block['parse_element'] = function (element, list_obj) {
       b_element = Arco.block.parse_logic_components(b_f_name, list_obj, b_element, Arco.block.parse_orblk);
 
     } else if (b_f_name == "text_print_delay") {
-      b_element = Arco.block.parse_timeoutblk(b_element, list_obj)
+      b_element = Arco.block.parse_logic_components(b_f_name, list_obj, b_element, Arco.block.parse_delayblk);
 
     } else if (b_f_name == "text_print_timeout") {
       b_element = Arco.block.parse_logic_components(b_f_name, list_obj, b_element, Arco.block.parse_timeoutblk);
