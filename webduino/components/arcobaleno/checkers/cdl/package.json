@@ -1,0 +1,4 @@
+{ 
+ "name" : "xmlParser",
+ "main" : "./xmlParser.js" 
+}

@@ -1,31 +1,37 @@
-var fs = require('fs');
+//var fs = require('fs');
+var PrivateParts = require('private-parts');
 var Graph = require('./Graph');
-var assert = require('assert.js');
-var libxmljs = require("libxmljs");
+//var assert = require('assert.js');
+var libxml = require("libxmljs");
 
-fs.readFile("./schema.xsd", "utf8", function(err, xsd){
-	if(err){
-		console.log("Read Schema Error: ", err);
-	} else {
-		xsdDoc = libxml.parseXml(xsd);
-		fs.readFile("./cdl.xml", "utf8", function(err, xml){
-			if(err){
-				console.log("Read CDL Error: ", err);
-			} else{
-				xmlDoc = libxml.parseXml(xml);
-				console.log(xmlDoc.validate(xsdDoc));
-				console.log(xmlDoc.validationErrors);
-				dataPreprocessing(xml);
-			}
-		});
-	}
+/*var xmlParser = (function(xml){
+	var xsd = fs.readFileSync("./schema.xsd", "utf8");
+	var xsdDoc = libxml.parseXml(xsd);
+	//var xml = fs.readFileSync("./cdl.xml", "utf8");
+	var xmlDoc = libxml.parseXml(xml);
+	console.log(xmlDoc.validate(xsdDoc));
+	console.log(xmlDoc.validationErrors);
+	//dataPreprocessing(xml);
+	return xmlParser;
+}());
+*/
+exports.checker = function(xml, xsd) {
 	
-});
-
-
+	//var xsd = fs.readFileSync("./schema.xsd", "utf8");
+	var xsdDoc = libxml.parseXml(xsd);
+	//var xml = fs.readFileSync("./cdl.xml", "utf8");
+	var xmlDoc = libxml.parseXml(xml);
+	console.log(xmlDoc.validate(xsdDoc));
+	console.log(xmlDoc.validationErrors);
+	var str = xmlDoc.validate(xsdDoc);
+	var err = xmlDoc.validationErrors;
+	//dataPreprocessing(xml);
+	console.log("test checker");
+	return true;
+};
 
 function dataPreprocessing(data){
-	var xmlDoc = libxmljs.parseXml(data.toString());
+	var xmlDoc = libxml.parseXml(data.toString());
 	var start = new Array();
 	var end = new Array();
 	var tpre = new Array();
@@ -82,26 +88,6 @@ function dataPreprocessing(data){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 			
 		}
 	}
@@ -138,5 +124,4 @@ function getAttributeText(tag1, tag2, attr, xmlDoc){
 	}
 	return result;
 }
-
 
